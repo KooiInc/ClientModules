@@ -273,7 +273,11 @@ const isEmpty = {
 const html = {
   fn: (extCollection, htmlValue, append) => {
     if (!htmlValue) {
-      return extCollection.first()?.innerHTML || "";
+      const firstEl = extCollection.first();
+      if (firstEl) {
+        return firstEl.innerHTML;
+      }
+      return "";
     }
     // topLevel only
     if (extCollection.collection.length) {
@@ -343,8 +347,8 @@ const each = {
 const val = {
   fn: (extCollection, value = null) => {
     const firstElem = extCollection.first();
-
-    if ([HTMLInputElement, HTMLSelectElement].includes(firstElem?.constructor)) {
+    if (!firstElem) { return null; }
+    if ([HTMLInputElement, HTMLSelectElement].includes(firstElem.constructor)) {
       if (value) {
         firstElem.value = value;
       }
@@ -392,7 +396,10 @@ const first = {
  * @type {{fn: (function(*, *=): *)}}
  */
 const find = {
-  fn: (extCollection, selector) => extCollection.first()?.querySelectorAll(selector)
+  fn: (extCollection, selector) => {
+    const firstElem = extCollection.first()
+    return firstElem && firstElem.querySelectorAll(selector) || [];
+  }
 };
 
 /**
