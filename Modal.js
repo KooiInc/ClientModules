@@ -2,26 +2,32 @@
 const ModalMessage = () => {
   addCssIfNotAlreadyAdded();
   let timer = null;
+  const closeIfActive = () => {
+    document.querySelector(".between")?.remove();
+    document.querySelector(".alertBox")?.remove();
+  }
   const isTouchDevice = "ontouchstart" in document.documentElement;
   const clickOrTouch =  isTouchDevice ? "touchend" : "click";
   const positionStuff = (theBox, theOkBttn) => {
     theBox.style.display = "block";
     theBox.classList.add("isDone");
-    theOkBttn.style.position = "fixed";
-    theOkBttn.style.left = `${(theBox.offsetWidth) - 18}px`;
+    if(theOkBttn) {
+      theOkBttn.style.position = "fixed";
+      theOkBttn.style.left = `${(theBox.offsetWidth) - 18}px`;
+    }
 
-    if (theBox.offsetHeight <= 20) {
+    if (theBox.offsetHeight <= 50) {
       theBox.style.padding = "8px";
-      theOkBttn.style.left = `${(theBox.offsetWidth) - 12}px`;
+      if (theOkBttn) {
+        theOkBttn.style.left = `${(theBox.offsetWidth) - 12}px`;
+      }
     }
   };
   const endTimer = () => timer && clearTimeout(timer);
   const create = (message, omitOkBttn) => {
     endTimer();
+    closeIfActive();
     let okIcon = null;
-    if (document.querySelector(".alertBox")) {
-      remove(null);
-    }
     window.scrollTo(0, 0);
     document.querySelectorAll("html, body")
       .forEach(el => el.style.overflow = "hidden");
@@ -44,22 +50,20 @@ const ModalMessage = () => {
     document.body.appendChild(modalBox);
     timer = setTimeout(() => positionStuff(modalBox, okIcon), 10);
   };
-  const removeElement = element => element && element.remove();
   const remove = callback => {
     endTimer();
+    // scrolling back
     Array.from(document.querySelectorAll("html, div, body"))
       .forEach(el => el.style.overflow = "");
-    const maybeBox = document.querySelector(".alertBox");
-    if (maybeBox) { maybeBox.classList.remove("isDone"); }
     timer = setTimeout(() => {
-        removeElement(document.querySelector(".between"));
-        removeElement(maybeBox);
+        closeIfActive();
         if (callback && callback instanceof Function) { callback(); }
       }, 300); // 300 is the fading time (ease-out)
       return this;
-    };
-  const timed = (message, closeAfter = 2, callback = null ) => {
-    create(message, false);
+  };
+  const timed = (message, closeAfter = 2, callback = null, omitOkBttn = false ) => {
+    closeIfActive();
+    create(message, omitOkBttn);
     const remover = callback ? () => remove(callback) : remove;
     timer = setTimeout(remover, closeAfter * 1000);
   };
