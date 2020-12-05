@@ -13,7 +13,7 @@ const {Store} = (() => {
     setPlain: (key, value) => localStorage.setItem(key, value),
     setJson: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
     remove: key => localStorage.removeItem(key),
-    clearExcept: (...except) => {
+    clear: (...except) => {
       Object.entries(localStorage).forEach(([key]) => {
         if (!except.includes(key)) {
           localStorage.removeItem(key);
