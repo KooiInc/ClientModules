@@ -14,6 +14,22 @@ const loop = (extCollection, callback) => {
   return extCollection;
 };
 
+/* region common helpers */
+const isVisible = el => {
+  const {currentStyle} = el;
+  const computedStyle = currentStyle || getComputedStyle(el);
+  const invisible = "hidden" === computedStyle.visibility;
+  const noDisplay = "none" === computedStyle.display;
+  const offscreen = el.offsetTop < 0 || el.offsetLeft < 0 || el.offsetLeft > document.body.offsetWidth;
+  const noOpacity = +computedStyle.opacity === 0;
+
+  return offscreen || noOpacity || noDisplay || invisible
+    ? false
+    : !(el instanceof HTMLBodyElement)
+      ? isVisible(el.parentNode) : true;
+};
+/* endregion common helpers */
+
 /* region style color toggling helpers */
 /**
  * Convert abbreviated hex color (eg #000) to full
@@ -41,6 +57,7 @@ const hex2RGBA = (hex, opacity = 100) => {
 /** endregion */
 
 /* region handling helper */
+const getStyle = elem => getComputedStyle(elem);
 const addHandler = (() => {
   /**
    * Note:
@@ -68,45 +85,22 @@ const addHandler = (() => {
   };
 
   /**
-   * get the target from the collection
-   * that is associated with the handler
-   * (via handlerFnFactor)
-   * @param selectr
-   * @param extCollection
-   * @param origin
-   * @param includeParent
-   * @returns Element
-   */
-  const getTarget = (selectr, extCollection, origin, includeParent) => {
-    if (!extCollection.collection.find) {
-      extCollection.collection = [...extCollection.collection];
-    }
-    return (selectr instanceof Function)
-    ? extCollection.collection.find(el => el.isSameNode(origin))
-    : extCollection.collection
-        .find(elem =>
-          (includeParent && elem.isSameNode(origin) ||
-            [...elem.querySelectorAll(selectr)]
-              .find(el => el.isSameNode(origin))));
-  };
-
-  /**
    * wraps a handler (from $([]).on) and returns
    * a new handler function
    * @param extCollection
-   * @param selectr
+   * @param maybeSelectorOrCallback
    * @param callback
    * @param includeParent
    * @returns {function(...[*]=)}
    */
-  const handlerFnFactory = (extCollection, selectr, callback, includeParent) => {
+  const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback, includeParent) => {
     return evt => {
-      const target = getTarget(selectr, extCollection, evt.target, includeParent);
-      if (target) {
-        selectr instanceof Function
-          ? selectr(evt, extCollection)
+      const target = !(maybeSelectorOrCallback instanceof Function) &&
+          evt.target.closest(maybeSelectorOrCallback);
+      if (target || maybeSelectorOrCallback instanceof Function) {
+        return maybeSelectorOrCallback instanceof Function
+          ? maybeSelectorOrCallback(evt, extCollection)
           : callback(evt, extCollection);
-        return true;
       }
       return false;
     }
@@ -135,11 +129,34 @@ const addHandler = (() => {
 const toggleClass= (el, className) => el.classList.toggle(className);
 
 /**
+ * swap [classname] with [...nwClassnames] of [el]
+ * @param el
+ * @param className
+ * @param nwClassName
+ * @returns {boolean}
+ */
+const swapClass = (el, className, ...nwClassNames) => {
+  el.classList.remove(className);
+  nwClassNames.forEach(name => el.classList.add(name))
+}
+
+/**
  * remove the element from the DOM tree
  * @param el
  * @returns {{parentNode}|*}
  */
 const remove = el => el.parentNode && el.parentNode.removeChild(el);
+
+/**
+ * Does (first) element contain a (or one of a set of) classNames?
+ * @type {{fn: (function(*, ...[*]): unknown)}}
+ */
+const hasClass = {
+  fn: (extCollection, ...classNames) => {
+    const firstElem = extCollection.first();
+    return classNames.find(name => firstElem.classList.contains(name));
+  },
+}
 
 /**
  * remove [classNames] from [el]. Classnames may be single string
@@ -164,10 +181,14 @@ const addClass = (el, ...classNames) =>
 /**
  * style [el]. css  must be key-value pairs
  * @param el
- * @param keyValuePairs
+ * @param keyOrKvPairs
  */
-const css = (el, keyValuePairs) =>
-  Object.entries(keyValuePairs).forEach( ([key, value]) => el.style[key] = value );
+const css = (el, keyOrKvPairs, value) => {
+  if (value) {
+    keyOrKvPairs = {[keyOrKvPairs]: value === "empty" ? "" : value};
+  }
+  Object.entries(keyOrKvPairs).forEach(([key, value]) => el.style[key] = value);
+}
 
 /**
  * set data-attribute for [el]
@@ -200,26 +221,35 @@ const assignAttrValues = (el, keyValuePairs) =>
  * attributes must be key-value pairs
  * style and data-attributes must also be key-value pairs
  * @param el
- * @param keyValuePairs
+ * @param keyOrObj
  */
-const attr = (el, keyValuePairs) =>
-  Object.entries(keyValuePairs).forEach(([key, value]) => {
-    const keyCompare = key.toLowerCase();
-
-    if (["style", "data"].includes(keyCompare)) {
-      if (keyCompare === "style") {
-        css(el, value);
-      } else if (keyCompare === "data") {
-        data(el, value);
-      }
-    } else {
-      if (value instanceof Object) {
-        assignAttrValues(el, value);
-      } else {
-        el.setAttribute(key, value);
-      }
+const attr = (el, keyOrObj, value) => {
+    if (value) {
+      keyOrObj = {[keyOrObj]: value};
     }
-  });
+
+    if (!value && keyOrObj.constructor === String) {
+      return el.getAttribute(keyOrObj);
+    }
+
+    Object.entries(keyOrObj).forEach(([key, value]) => {
+      const keyCompare = key.toLowerCase();
+
+      if (["style", "data"].includes(keyCompare)) {
+        if (keyCompare === "style") {
+          css(el, value);
+        } else if (keyCompare === "data") {
+          data(el, value);
+        }
+      } else {
+        if (value instanceof Object) {
+          assignAttrValues(el, value);
+        } else {
+          el.setAttribute(key, value);
+        }
+      }
+    });
+  }
 
 /**
  * set textValue for each element in the
@@ -249,6 +279,21 @@ const text = {
     return extCollection;
   },
 };
+
+const is ={
+  fn:  (extCollection, checkValue) => {
+    const firstElem = extCollection.first();
+
+    switch(checkValue) {
+      case ":visible": {
+        return isVisible(firstElem);
+      }
+      case ":hidden": return !isVisible(firstElem);
+      case ":disabled": return firstElem.getAttribute("readonly") || firstElem.getAttribute("disabled");
+      default: return true;
+    }
+  }
+}
 
 /**
  * remove element content
@@ -359,6 +404,22 @@ const val = {
 }
 
 /**
+ * replace elem with replaceElem
+ * multiple todo (replace with htmlstr, chainable)
+ * @type {{fn: replace.fn}}
+ */
+const replace = {
+  fn: (extCollection, selector, replaceElem) => {
+    const firstElem = extCollection.first();
+    const el2Replace = firstElem.querySelector(selector);
+    if (el2Replace && replaceElem) {
+      console.log(el2Replace, replaceElem, firstElem);
+      firstElem.replaceChild(el2Replace, replaceElem);
+    }
+  },
+}
+
+/**
  * return [el] with index [index] from the
  * collection of the ExtendedNodeList instance
  * (if it exists, otherwise the collection)
@@ -392,13 +453,34 @@ const first = {
 };
 
 /**
- * find stuff in a collection
+ * return first [el] from the
+ * collection of the ExtendedNodeList instance
+ * (if it exists, otherwise undefined)
+ * @type {{fn: first.fn}}
+ */
+const first$ = {
+  fn: (extCollection) => extCollection.single()
+};
+
+/**
+ * find stuff in a collection and return a NodeList
  * @type {{fn: (function(*, *=): *)}}
  */
 const find = {
   fn: (extCollection, selector) => {
-    const firstElem = extCollection.first()
+    const firstElem = extCollection.first();
     return firstElem && firstElem.querySelectorAll(selector) || [];
+  }
+};
+
+/**
+ * find stuff in a collection and return a new extCollection
+ * @type {{fn: (function(*, *=): *)}}
+ */
+const find$ = {
+  fn: (extCollection, selector) => {
+    const firstElem = extCollection.first();
+    return firstElem && new extCollection.constructor(firstElem.querySelectorAll(selector));
   }
 };
 
@@ -415,11 +497,25 @@ const on = {
     return extCollection;
   }
 };
+
+/**
+ * add delegated handler(s) for event [type]
+ * using one or more [callbacks].
+ * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
+ */
+const ON = {
+  fn: (extCollection, type, ...callbacks) => {
+    callbacks.forEach(cb => addHandler(extCollection, type, cb));
+    return extCollection;
+  }
+};
+
 /* endregion */
 
 const extensions = {
   toggleClass, addClass, removeClass, attr, removeAttr,
   text, css, html, toggleAttr, toggleStyleFragments, find,
-  each, single, first, on, empty, remove, isEmpty, val};
+  find$, each, single, first, first$, on, ON, empty, remove,
+  isEmpty, val, hasClass, is, replace, swapClass};
 
 export { loop,  extensions, };
