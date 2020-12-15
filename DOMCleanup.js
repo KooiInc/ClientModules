@@ -1,5 +1,6 @@
 // alllow or disallow unknown tags (default: false)
 let lenient = false;
+const log = false;
 const allowUnknownHtmlTags = {
   on: () => lenient = true,
   off: () => lenient = false,
@@ -133,13 +134,13 @@ const cleanupHtml = elem => {
       [...child.attributes]
         .forEach(attr => {
           if (notAllowedAttributes.test(attr.name.trim())) {
-            console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
+            log && console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
             child.removeAttribute(attr.name);
           }
         });
       const tagInSet = cleanupTagInfo.isAllowed(child);
       if (!tagInSet) {
-        console.info(`DOM cleanup message: tag [${child.nodeName.toLowerCase()}] removed`);
+        log && console.info(`DOM cleanup message: tag [${child.nodeName.toLowerCase()}] removed`);
         child.parentNode.removeChild(child);
       }
     }

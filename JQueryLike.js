@@ -77,8 +77,8 @@ const {$, util} = (() => {
     );
 
     const selectorRoot = root !== document.body &&
-    (inputObject.constructor === String &&
-      inputObject.toLowerCase() !== "body") ? root : document;
+      (inputObject.constructor === String &&
+        inputObject.toLowerCase() !== "body") ? root : document;
 
     try {
       const isArray = Array.isArray(inputObject);
@@ -107,10 +107,8 @@ const {$, util} = (() => {
         cleanupAndAppendCollection();
 
         log(`created element: *clean: [${this.collection[0].outerHTML}]`);
-      } else if (inputObject.constructor === String) {
+      } else if (inputObject && inputObject.trim) {
         this.collection = [...selectorRoot.querySelectorAll(inputObject)];
-      } else {
-        throw new TypeError(`input [${inputObject}] not valid`);
       }
       return this;
     } catch (err) {
