@@ -21,6 +21,7 @@ const cleanupTagInfo = {
   div: {elem: HTMLDivElement, allowed: true},
   embed: {elem: HTMLEmbedElement, allowed: false},
   fieldset: {elem: HTMLFieldSetElement, allowed: true},
+  font: {elem: HTMLFontElement, allowed: false},
   form: {elem: HTMLFormElement, allowed: false},
   hr: {elem: HTMLHRElement, allowed: true},
   head: {elem: HTMLHeadElement, allowed: false},
@@ -107,6 +108,8 @@ const cleanupTagInfo = {
   u:  {name: "u", allowed: true},
   var:  {name: "var", allowed: true},
   wbr:  {name: "wbr", allowed: true},
+  nobr: {name: "nobr", allowed: false},
+  tt: {name: "tt", allowed: true},
   noscript:  {name: "noscript", allowed: true},
   isAllowed(elem) {
     const tagInSet = Object.values(this)
