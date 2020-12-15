@@ -20,7 +20,7 @@ const isVisible = el => {
   const computedStyle = currentStyle || getComputedStyle(el);
   const invisible = "hidden" === computedStyle.visibility;
   const noDisplay = "none" === computedStyle.display;
-  const offscreen = el.offsetTop < 0 || el.offsetLeft < 0 || el.offsetLeft > document.body.offsetWidth;
+  const offscreen = el.offsetTop < 0 || (el.offsetLeft + el.offsetWidth) < 0 || el.offsetLeft > document.body.offsetWidth;
   const noOpacity = +computedStyle.opacity === 0;
 
   return offscreen || noOpacity || noDisplay || invisible
