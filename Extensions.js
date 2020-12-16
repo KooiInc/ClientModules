@@ -316,7 +316,7 @@ const isEmpty = {
  */
 const html = {
   fn: (extCollection, htmlValue, append) => {
-    if (!htmlValue === undefined) {
+    if (htmlValue === undefined) {
       const firstEl = extCollection.first();
       if (firstEl) {
         return firstEl.innerHTML;
