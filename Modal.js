@@ -30,13 +30,13 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     closeIfActive();
     let okIcon = null;
     window.scrollTo(0, 0);
-    const betweenLayer = Object.assign( document.createElement("div"), { className: "between" } );
+    const betweenLayer = createElementFromHtmlString(`<div class="between"></div>`);
     document.body.appendChild(betweenLayer);
     const modalBox = createElementFromHtmlString( `
       <div class="alertBox centeredHV" style="display:none">
         <div data-modalcontent>${message}</div>
-      </div>`.trim() );
-    console.log(modalBox);
+      </div>` );
+
     if (!omitOkBttn) {
       okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`);
       modalBox.insertBefore(okIcon, modalBox.firstChild);
@@ -48,10 +48,10 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   const remove = callback => {
     endTimer();
     timer = setTimeout(() => {
-        closeIfActive();
-        if (callback && callback instanceof Function) { callback(); }
-      }, 300); // 300 is the fading time (ease-out)
-      return this;
+      closeIfActive();
+      if (callback && callback instanceof Function) { callback(); }
+    }, 300); // 300 is the fading time (ease-out)
+    return this;
   };
   const timed = (message, closeAfter = 2, callback = null, omitOkBttn = false ) => {
     closeIfActive();
@@ -62,8 +62,8 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
 
   function addCssIfNotAlreadyAdded() {
     setTagPermission("link", true);
-    // this enables users to use their own stylesheet (named modal.css)
-    if (![...document.styleSheets].find(sheet => /modal\.css/i.test(sheet.href))) {
+    // this enables users to use their own stylesheet (name should end with modal.css)
+    if (![...document.styleSheets].find(sheet => /modal\.css$/i.test(sheet.href))) {
       const cssLink = createElementFromHtmlString(`
         <link id="modalcss" href="${styleSheetLocation}" rel="stylesheet"/>` );
       document.querySelector("head").appendChild(cssLink);

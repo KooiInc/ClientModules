@@ -73,7 +73,7 @@ const {$, util} = (() => {
 
     this.collection = [];
     const cleanupAndAppendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
-      !elem.dataset.elementInvalid && [...acc, element2DOM(elem, root, position)] || acc, []
+      !(elem || {dataset: {}}).dataset.elementInvalid ? [...acc, element2DOM(elem, root, position)] : acc, []
     );
 
     const selectorRoot = root !== document.body &&
