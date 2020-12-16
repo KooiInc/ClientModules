@@ -129,7 +129,7 @@ const cleanupHtml = elem => {
   const template = document.createElement("template");
   template.innerHTML = `<div id="placeholder">${elem.outerHTML}</div>`;
   const el2Clean = template.content.querySelector("#placeholder");
-  el2Clean.querySelectorAll("*").forEach(child => {
+  [...el2Clean.children].forEach(child => {
     if (child.nodeType !== 3) {
       [...child.attributes]
         .forEach(attr => {
@@ -145,7 +145,7 @@ const cleanupHtml = elem => {
       }
     }
   });
-  return el2Clean.firstChild;
+  return el2Clean.children[0];
 };
 
 // get restricted tags

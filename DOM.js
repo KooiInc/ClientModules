@@ -31,8 +31,6 @@ const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd)
 const createElementFromHtmlString = htmlStr => {
   let nwElem = htmlToVirtualElement(htmlStr);
 
-  const noChildren = [...nwElem.childNodes].filter(elem => elem instanceof HTMLElement).length < 1;
-
   if (!nwElem) {
     const report = `${htmlStr.slice(0, htmlStr.indexOf("<") + 1)}...${
       htmlStr.slice(htmlStr.lastIndexOf(">"))}`;
@@ -40,7 +38,7 @@ const createElementFromHtmlString = htmlStr => {
     // onError create an empty element with data attribute
     nwElem = Object.assign(document.createElement("div"), {"data-elementInvalid": `${report}`});
   }
-  return noChildren ? nwElem : nwElem.children[0];
+  return nwElem.children[0];
 };
 
 export {
