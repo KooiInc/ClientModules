@@ -327,7 +327,7 @@ const html = {
     if (extCollection.collection.length) {
       const el2Change = extCollection.first();
       if (htmlValue.trim().length < 1) {
-        extCollection.first().textContent = "";
+        el2Change.textContent = "";
       } else {
         const nwElement = createElementFromHtmlString(`<div>${htmlValue}</div>`);
 
