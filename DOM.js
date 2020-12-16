@@ -31,7 +31,7 @@ const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd)
 const createElementFromHtmlString = htmlStr => {
   let nwElem = htmlToVirtualElement(htmlStr);
 
-  const noChildren = nwElem.filter(elem => !elem instanceof HTMLElement).length < 1;
+  const noChildren = [...nwElem.childNodes].filter(elem => elem instanceof HTMLElement).length < 1;
 
   if (!nwElem) {
     const report = `${htmlStr.slice(0, htmlStr.indexOf("<") + 1)}...${
