@@ -22,7 +22,7 @@ import {
 // local
 import {
   extensions,
-  loop
+  loop,
 } from "./Extensions.js";
 
 // no need for this?
@@ -82,9 +82,8 @@ const {$, util} = (() => {
 
     try {
       const isArray = Array.isArray(inputObject);
-      if (!inputObject) {
-        this.collection = [];
-      }
+      this.collection = [];
+
       if (inputObject instanceof HTMLElement) {
         this.collection = [inputObject];
       } else if (inputObject instanceof NodeList) {
@@ -97,7 +96,6 @@ const {$, util} = (() => {
         if (isArray) {
           inputObject.forEach(html => {
             const nwElem = createElementFromHtmlString(html, root);
-            this.collection.push(nwElem);
           });
         } else {
           const nwElem = createElementFromHtmlString(inputObject.trim(), root);
@@ -105,7 +103,6 @@ const {$, util} = (() => {
         }
         // remove erroneous elems and append to DOM
         cleanupAndAppendCollection();
-
         log(`created element: *clean: [${this.collection[0].outerHTML}]`);
       } else if (inputObject && inputObject.trim) {
         this.collection = [...selectorRoot.querySelectorAll(inputObject)];
