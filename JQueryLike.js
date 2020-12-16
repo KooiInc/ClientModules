@@ -97,11 +97,11 @@ const {$, util} = (() => {
         if (isArray) {
           inputObject.forEach(html => {
             const nwElem = createElementFromHtmlString(html, root);
-            this.collection.push(nwElem.childNodes[0]);
+            this.collection.push(nwElem);
           });
         } else {
           const nwElem = createElementFromHtmlString(inputObject.trim(), root);
-          this.collection = [nwElem.childNodes[0]];
+          this.collection = [nwElem];
         }
         // remove erroneous elems and append to DOM
         cleanupAndAppendCollection();
