@@ -26,7 +26,7 @@ const cleanupTagInfo = {
   form: {elem: HTMLFormElement, allowed: false},
   hr: {elem: HTMLHRElement, allowed: true},
   head: {elem: HTMLHeadElement, allowed: false},
-  output: {elem: 	HTMLOutputElement, allowed: true},
+  output: {elem: HTMLOutputElement, allowed: true},
   iframe: {elem: HTMLIFrameElement, allowed: false},
   img: {elem: HTMLImageElement, allowed: true},
   input: {elem: HTMLInputElement, allowed: true},
@@ -74,50 +74,50 @@ const cleanupTagInfo = {
   summary: {name: "summary", allowed: true},
   main: {name: "main", allowed: true},
   address: {name: "address", allowed: true},
-  colgroup:  {name: "colgroup", allowed: true},
-  tbody:  {name: "tbody", allowed: true},
-  tfoot:  {name: "tfoot", allowed: true},
-  th:  {name: "th", allowed: true},
-  dd:  {name: "dd", allowed: true},
-  dt:  {name: "dt", allowed: true},
-  figcaption:  {name: "figcaption", allowed: true},
-  figure:  {name: "figure", allowed: true},
-  i:  {name: "i", allowed: true},
-  b:  {name: "b", allowed: true},
+  colgroup: {name: "colgroup", allowed: true},
+  tbody: {name: "tbody", allowed: true},
+  tfoot: {name: "tfoot", allowed: true},
+  th: {name: "th", allowed: true},
+  dd: {name: "dd", allowed: true},
+  dt: {name: "dt", allowed: true},
+  figcaption: {name: "figcaption", allowed: true},
+  figure: {name: "figure", allowed: true},
+  i: {name: "i", allowed: true},
+  b: {name: "b", allowed: true},
   code: {name: "code", allowed: true},
-  h1:  {name: "h1", allowed: true},
+  h1: {name: "h1", allowed: true},
   h2: {name: "h2", allowed: true},
   h3: {name: "h3", allowed: true},
   h4: {name: "h4", allowed: true},
   abbr: {name: "abbr", allowed: true},
   bdo: {name: "bdo", allowed: true},
   dfn: {name: "dfn", allowed: true},
-  em:  {name: "em", allowed: true},
-  kbd:  {name: "kbd", allowed: true},
-  mark:  {name: "mark", allowed: true},
-  q:  {name: "1", allowed: true},
-  rb:  {name: "rb", allowed: true},
-  rp:  {name: "rp", allowed: true},
-  rt:  {name: "rt", allowed: true},
-  ruby:  {name: "ruby", allowed: true},
-  s:  {name: "s", allowed: true},
-  samp:  {name: "samp", allowed: true},
-  small:  {name: "small", allowed: true},
-  strong:  {name: "strong", allowed: true},
-  sup:  {name: "sup", allowed: true},
-  sub:  {name: "sub", allowed: true},
-  u:  {name: "u", allowed: true},
-  var:  {name: "var", allowed: true},
-  wbr:  {name: "wbr", allowed: true},
+  em: {name: "em", allowed: true},
+  kbd: {name: "kbd", allowed: true},
+  mark: {name: "mark", allowed: true},
+  q: {name: "1", allowed: true},
+  rb: {name: "rb", allowed: true},
+  rp: {name: "rp", allowed: true},
+  rt: {name: "rt", allowed: true},
+  ruby: {name: "ruby", allowed: true},
+  s: {name: "s", allowed: true},
+  samp: {name: "samp", allowed: true},
+  small: {name: "small", allowed: true},
+  strong: {name: "strong", allowed: true},
+  sup: {name: "sup", allowed: true},
+  sub: {name: "sub", allowed: true},
+  u: {name: "u", allowed: true},
+  var: {name: "var", allowed: true},
+  wbr: {name: "wbr", allowed: true},
   nobr: {name: "nobr", allowed: false},
   tt: {name: "tt", allowed: true},
-  noscript:  {name: "noscript", allowed: true},
+  noscript: {name: "noscript", allowed: true},
   isAllowed(elem) {
     const tagInSet = Object.values(this)
       .find(tag => tag.elem && elem instanceof tag.elem ||
         (elem.nodeName || "").toLowerCase() === tag.name);
     return (tagInSet && tagInSet.allowed) ||
-       lenient && !tagInSet;
+      lenient && !tagInSet;
   }
 };
 
@@ -130,19 +130,17 @@ const cleanupHtml = elem => {
   template.innerHTML = `<div id="placeholder">${elem.outerHTML}</div>`;
   const el2Clean = template.content.querySelector("#placeholder");
   [...el2Clean.children].forEach(child => {
-    if (child.nodeType !== 3) {
-      [...child.attributes]
-        .forEach(attr => {
-          if (notAllowedAttributes.test(attr.name.trim())) {
-            log && console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
-            child.removeAttribute(attr.name);
-          }
-        });
-      const tagInSet = cleanupTagInfo.isAllowed(child);
-      if (!tagInSet) {
-        log && console.info(`DOM cleanup message: tag [${child.nodeName.toLowerCase()}] removed`);
-        child.parentNode.removeChild(child);
-      }
+    [...child.attributes]
+      .forEach(attr => {
+        if (notAllowedAttributes.test(attr.name.trim())) {
+          log && console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
+          child.removeAttribute(attr.name);
+        }
+      });
+    const tagInSet = cleanupTagInfo.isAllowed(child);
+    if (!tagInSet) {
+      log && console.info(`DOM cleanup message: tag [${child.nodeName.toLowerCase()}] removed`);
+      child.parentNode.removeChild(child);
     }
   });
   return el2Clean.children[0];
@@ -164,7 +162,8 @@ const setTagPermission = (tagName, allowed = false) => {
   if (cleanupTagInfo[tagName]) {
     cleanupTagInfo[tagName] = {
       ...cleanupTagInfo[tagName.toLowerCase()],
-      allowed: allowed };
+      allowed: allowed
+    };
   }
 };
 
@@ -177,4 +176,4 @@ const getOrSetrestrictedAttributes = attrsRegExp => {
   return notAllowedAttributes;
 };
 
-export { cleanupHtml, getRestricted, setTagPermission, getOrSetrestrictedAttributes, allowUnknownHtmlTags };
+export {cleanupHtml, getRestricted, setTagPermission, getOrSetrestrictedAttributes, allowUnknownHtmlTags};
