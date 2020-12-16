@@ -1,15 +1,15 @@
 import {createElementFromHtmlString} from "./DOM.js";
 
 /**
- * Private: iterator used for most
- * extensions.
+ * iterator used for most
+ * extensions. Also exposed as '[ExtCollection].each'
  * @param extCollection
  * @param callback
  * @returns ExtCollection instance
  */
 const loop = (extCollection, callback) => {
   for (let i = 0; i < extCollection.collection.length; i += 1) {
-    callback(extCollection.collection[i]);
+    callback(extCollection.collection[i], i);
   }
   return extCollection;
 };
@@ -85,15 +85,14 @@ const addHandler = (() => {
   };
 
   /**
-   * wraps a handler (from $([]).on) and returns
+   * wraps a handler (from $([]).on/ON) and returns
    * a new handler function
    * @param extCollection
    * @param maybeSelectorOrCallback
    * @param callback
-   * @param includeParent
    * @returns {function(...[*]=)}
    */
-  const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback, includeParent) => {
+  const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback) => {
     return evt => {
       const target = !(maybeSelectorOrCallback instanceof Function) &&
           evt.target.closest(maybeSelectorOrCallback);
