@@ -94,11 +94,11 @@ const {$, util} = (() => {
         log(`trying to create ... [${inputObject}]`);
 
         if (isArray) {
-          inputObject.forEach(html => {
-            const nwElem = createElementFromHtmlString(html, root);
+          inputObject.forEach(htmlFragment => {
+            this.collection.push(createElementFromHtmlString(htmlFragment));
           });
         } else {
-          const nwElem = createElementFromHtmlString(inputObject.trim(), root);
+          const nwElem = createElementFromHtmlString(inputObject);
           this.collection = [nwElem];
         }
         // remove erroneous elems and append to DOM
