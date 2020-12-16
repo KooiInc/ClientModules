@@ -12,10 +12,10 @@ const closestSibling = (elem, selector) => elem.parentNode.querySelector(selecto
 
 // create DOM object from html string
 const htmlToVirtualElement = htmlString => {
-  const placeholder = Object.assign(document.createElement("div"), { innerHTML: htmlString.trim() });
+  const placeholder = Object.assign(document.createElement("div"), { id:"placeholder", innerHTML: htmlString.trim() });
 
   return placeholder.childNodes.length
-    ? cleanupHtml(placeholder).children[0]
+    ? cleanupHtml(placeholder)
     : undefined;
 };
 
@@ -31,6 +31,8 @@ const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd)
 const createElementFromHtmlString = htmlStr => {
   let nwElem = htmlToVirtualElement(htmlStr);
 
+  const noChildren = nwElem.filter(elem => !elem instanceof HTMLElement).length < 1;
+
   if (!nwElem) {
     const report = `${htmlStr.slice(0, htmlStr.indexOf("<") + 1)}...${
       htmlStr.slice(htmlStr.lastIndexOf(">"))}`;
@@ -38,7 +40,7 @@ const createElementFromHtmlString = htmlStr => {
     // onError create an empty element with data attribute
     nwElem = Object.assign(document.createElement("div"), {"data-elementInvalid": `${report}`});
   }
-  return nwElem;
+  return noChildren ? nwElem : nwElem.children[0];
 };
 
 export {

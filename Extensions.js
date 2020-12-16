@@ -325,7 +325,7 @@ const html = {
     }
     // topLevel only
     if (extCollection.collection.length) {
-      const el2Change = extCollection.collection[0];
+      const el2Change = extCollection.first();
       const nwElement = createElementFromHtmlString(htmlValue);
       el2Change.innerHTML = `${append ? el2Change.innerHTML : ""}${nwElement.innerHTML}`;
     }
