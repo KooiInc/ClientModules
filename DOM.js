@@ -12,7 +12,7 @@ const closestSibling = (elem, selector) => elem.parentNode.querySelector(selecto
 
 // create DOM object from html string
 const htmlToVirtualElement = htmlString => {
-  const placeholder = Object.assign(document.createElement("div"), { innerHTML: htmlString });
+  const placeholder = Object.assign(document.createElement("div"), { innerHTML: htmlString.trim() });
 
   return placeholder.childNodes.length
     ? cleanupHtml(placeholder)
