@@ -29,8 +29,6 @@ const ModalMessage = () => {
     closeIfActive();
     let okIcon = null;
     window.scrollTo(0, 0);
-    // document.querySelectorAll("html, body")
-    //   .forEach(el => el.style.overflow = "hidden");
     const betweenLayer = Object.assign( document.createElement("div"), { className: "between" } );
     document.body.appendChild(betweenLayer);
     const modalBox =  Object.assign(document.createElement("div"), {
@@ -52,9 +50,6 @@ const ModalMessage = () => {
   };
   const remove = callback => {
     endTimer();
-    // scrolling back
-    // Array.from(document.querySelectorAll("html, div, body"))
-    //   .forEach(el => el.style.overflow = "");
     timer = setTimeout(() => {
         closeIfActive();
         if (callback && callback instanceof Function) { callback(); }
