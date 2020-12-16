@@ -36,7 +36,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
       <div class="alertBox centeredHV" style="display:none">
         <div data-modalcontent>${message}</div>
       </div>` ).firstChild;
-
+    console.log(modalBox);
     if (!omitOkBttn) {
       okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`);
       modalBox.insertBefore(okIcon, modalBox.firstChild);
