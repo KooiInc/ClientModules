@@ -316,7 +316,7 @@ const isEmpty = {
  */
 const html = {
   fn: (extCollection, htmlValue, append) => {
-    if (!htmlValue) {
+    if (!htmlValue === undefined) {
       const firstEl = extCollection.first();
       if (firstEl) {
         return firstEl.innerHTML;
@@ -326,12 +326,16 @@ const html = {
     // topLevel only
     if (extCollection.collection.length) {
       const el2Change = extCollection.first();
-      const nwElement = createElementFromHtmlString(`<div>${htmlValue}</div>`);
-
-      if (append) {
-        el2Change.innerHTML += nwElement.innerHTML;
+      if (htmlValue.trim().length < 1) {
+        extCollection.first().textContent = "";
       } else {
-        el2Change.innerHTML = nwElement.innerHTML;
+        const nwElement = createElementFromHtmlString(`<div>${htmlValue}</div>`);
+
+        if (append) {
+          el2Change.innerHTML += nwElement.innerHTML;
+        } else {
+          el2Change.innerHTML = nwElement.innerHTML;
+        }
       }
     }
     return extCollection;
