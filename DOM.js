@@ -15,7 +15,7 @@ const htmlToVirtualElement = htmlString => {
   const placeholder = Object.assign(document.createElement("div"), { innerHTML: htmlString.trim() });
 
   return placeholder.childNodes.length
-    ? cleanupHtml(placeholder)
+    ? cleanupHtml(placeholder).children[0]
     : undefined;
 };
 
@@ -38,7 +38,7 @@ const createElementFromHtmlString = htmlStr => {
     // onError create an empty element with data attribute
     nwElem = Object.assign(document.createElement("div"), {"data-elementInvalid": `${report}`});
   }
-  return nwElem.children[0];
+  return nwElem;
 };
 
 export {
