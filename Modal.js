@@ -75,7 +75,7 @@ const ModalMessage = () => {
         .appendChild(
           Object.assign( document.createElement("link"), {
             id: "modalcss",
-            href: "/Modules/Modal.css",
+            href: "//cdn.nicon.nl/Modules/Modal.css",
             rel: "stylesheet",
           } )
         );
