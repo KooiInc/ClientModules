@@ -1,4 +1,5 @@
-// Note: standalone, no extra modules needed
+import {createElementFromHtmlString, setTagPermission} from "//cdn.nicon.nl/Modules/DOM.js";
+
 const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") => {
   addCssIfNotAlreadyAdded();
   let timer = null;
@@ -31,17 +32,13 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     window.scrollTo(0, 0);
     const betweenLayer = Object.assign( document.createElement("div"), { className: "between" } );
     document.body.appendChild(betweenLayer);
-    const modalBox =  Object.assign(document.createElement("div"), {
-                        className: "alertBox centeredHV",
-                        innerHTML: `<div data-modalcontent>${message}</div>`,
-                        style: "display: none",
-                      });
+    const modalBox = createElementFromHtmlString( `
+      <div class="alertBox centeredHV" style="display:none">
+        <div data-modalcontent>${message}</div>
+      </div>` ).firstChild;
 
     if (!omitOkBttn) {
-      okIcon = Object.assign( document.createElement("span"), {
-                  id: "alertOk",
-                  className: "okHandle",
-                } );
+      okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`);
       modalBox.insertBefore(okIcon, modalBox.firstChild);
     }
 
@@ -64,16 +61,12 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   };
 
   function addCssIfNotAlreadyAdded() {
+    setTagPermission("link", true);
     // this enables users to use their own stylesheet (named modal.css)
     if (![...document.styleSheets].find(sheet => /modal\.css/i.test(sheet.href))) {
-      document.querySelector("head")
-        .appendChild(
-          Object.assign( document.createElement("link"), {
-            id: "modalcss",
-            href: styleSheetLocation,
-            rel: "stylesheet",
-          } )
-        );
+      const cssLink = createElementFromHtmlString(`
+        <link id="modalcss" href="${styleSheetLocation}" rel="stylesheet"/>` );
+      document.querySelector("head").appendChild(cssLink);
     }
   }
 
