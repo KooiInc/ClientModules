@@ -35,10 +35,10 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     const modalBox = createElementFromHtmlString( `
       <div class="alertBox centeredHV" style="display:none">
         <div data-modalcontent>${message}</div>
-      </div>` ).firstChild;
+      </div>` ).childNodes[0];
     console.log(modalBox);
     if (!omitOkBttn) {
-      okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`);
+      okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`).childNodes[0];
       modalBox.insertBefore(okIcon, modalBox.firstChild);
     }
 
