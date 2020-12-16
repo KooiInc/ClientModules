@@ -1,5 +1,5 @@
 // Note: standalone, no extra modules needed
-const ModalMessage = () => {
+const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") => {
   addCssIfNotAlreadyAdded();
   let timer = null;
   const closeIfActive = () => {
@@ -70,7 +70,7 @@ const ModalMessage = () => {
         .appendChild(
           Object.assign( document.createElement("link"), {
             id: "modalcss",
-            href: "//cdn.nicon.nl/Modules/Modal.css",
+            href: styleSheetLocation,
             rel: "stylesheet",
           } )
         );
