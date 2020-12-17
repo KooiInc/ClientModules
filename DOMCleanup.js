@@ -28,6 +28,7 @@ const cleanupTagInfo = {
   head: {elem: HTMLHeadElement, allowed: false},
   output: {elem: HTMLOutputElement, allowed: true},
   iframe: {elem: HTMLIFrameElement, allowed: false},
+  frameset: {elem: HTMLFrameSetElement, allowed: false},
   img: {elem: HTMLImageElement, allowed: true},
   input: {elem: HTMLInputElement, allowed: true},
   li: {elem: HTMLLIElement, allowed: true},
@@ -44,7 +45,7 @@ const cleanupTagInfo = {
   option: {elem: HTMLOptionElement, allowed: true},
   p: {elem: HTMLParagraphElement, allowed: true},
   param: {elem: HTMLParamElement, allowed: true},
-  picture: {elem: HTMLPictureElement, allowed: true},
+  picture: {elem: HTMLPictureElement, allowed: false},
   pre: {elem: HTMLPreElement, allowed: true},
   progress: {elem: HTMLProgressElement, allowed: false},
   quote: {elem: HTMLQuoteElement, allowed: true},
@@ -63,7 +64,7 @@ const cleanupTagInfo = {
   time: {elem: HTMLTimeElement, allowed: true},
   title: {elem: HTMLTitleElement, allowed: true},
   track: {elem: HTMLTrackElement, allowed: true},
-  details: {elem: HTMLDetailsElement, allowed: true},
+  details: {elem: HTMLDetailsElement, allowed: false},
   ul: {elem: HTMLUListElement, allowed: true},
   video: {elem: HTMLVideoElement, allowed: false},
   del: {elem: HTMLModElement, allowed: true},
@@ -112,6 +113,7 @@ const cleanupTagInfo = {
   nobr: {name: "nobr", allowed: false},
   tt: {name: "tt", allowed: true},
   noscript: {name: "noscript", allowed: true},
+  comment: {name: "comment", allowed: false},
   isAllowed(elem) {
     const tagInSet = Object.values(this)
       .find(tag => tag.elem && elem instanceof tag.elem ||
@@ -122,18 +124,25 @@ const cleanupTagInfo = {
 };
 
 // regex not allowed attributes
-let notAllowedAttributes = /(^action|allow|contenteditable|data$)|(^on)|download/i;
+let notAllowedAttributes = /(^action|allow|contenteditable|data$)|(^on)|download|formaction|form|autofocus|poster|source|dirname|srcdoc|srcset|xlink|for|event|xmlns/i;
+let notAllowedAttributeValues = /javascript|injected|import|noreferrer|alert|DataURL/i;
 
 // cleanup a given html element
 const cleanupHtml = elem => {
   const template = document.createElement("template");
   template.innerHTML = `<div id="placeholder">${elem.outerHTML}</div>`;
   const el2Clean = template.content.querySelector("#placeholder");
-  [...el2Clean.children].forEach(child => {
+  el2Clean.querySelectorAll("*").forEach(child => {
     [...child.attributes]
       .forEach(attr => {
+        if (notAllowedAttributeValues.test(attr.value.trim())) {
+          //log &&
+          console.info(`DOM cleanup message: attribute [${attr.value}] with value [${attr.value}] removed`);
+          child.removeAttribute(attr.name);
+        }
         if (notAllowedAttributes.test(attr.name.trim())) {
-          log && console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
+          //log &&
+          console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
           child.removeAttribute(attr.name);
         }
       });
