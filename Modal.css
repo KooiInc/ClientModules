@@ -12,7 +12,7 @@
     opacity: 0.4;
 }
 
-.alertBox {
+.popupBox {
     max-width: 30vw;
     max-height: 40vh;
     background-color: white;
@@ -24,7 +24,7 @@
     font: normal 13px/17px Verdana, Arial, sans-serif;
 }
 
-.alertBox.showAndCenter {
+.popupBox.showAndCenter {
     margin: 0;
     position: fixed;
     top: 50%;
@@ -34,20 +34,20 @@
     transition: opacity ease-in 0.4s 0s;
 }
 
-.alertBox div[data-modalcontent] {
+.popupBox div[data-modalcontent] {
     overflow: auto;
     max-height: inherit;
     clear: both;
     padding: 0 6px;
 }
 
-.alertBox p,
-.alertBox h3 {
+.popupBox p,
+.popupBox h3 {
     margin-top: 0.4em;
     margin-bottom: 0;
 }
 
-.alertBox h3 {
+.popupBox h3 {
     margin-top: 0.3em;
     font-size: 0.9em;
 }

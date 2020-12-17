@@ -6,7 +6,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   let timer = null;
   const closeIfActive = () => {
     document.querySelector(".between")?.remove();
-    document.querySelector(".alertBox")?.remove();
+    document.querySelector(".popupBox")?.remove();
   }
   const isTouchDevice = "ontouchstart" in document.documentElement;
   const clickOrTouch =  isTouchDevice ? "touchend" : "click";
@@ -33,12 +33,12 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     const betweenLayer = createElementFromHtmlString(`<div class="between"></div>`);
     document.body.appendChild(betweenLayer);
     const modalBox = createElementFromHtmlString( `
-      <div class="alertBox">
+      <div class="popupBox">
         <div data-modalcontent>${message}</div>
       </div>` );
 
     if (!omitOkBttn) {
-      okIcon = createElementFromHtmlString(`<span id="alertOk" class="okHandle"></span>`);
+      okIcon = createElementFromHtmlString(`<span id="closer" class="okHandle"></span>`);
       modalBox.insertBefore(okIcon, modalBox.firstChild);
     }
 
@@ -72,11 +72,12 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   }
 
   document.addEventListener(clickOrTouch, evt => {
-    const origin = evt.target;
-    if (document.querySelector("#alertOk")
-      && (origin.id === "alertOk"
-        || origin.classList.contains("between"))) {
-      remove(null);
+    const canClose = document.querySelector("#closer");
+    if (canClose) {
+      const origin = evt.target.closest("#closer");
+      if (origin || evt.target.classList.contains("between")) {
+        remove(null);
+      }
     }
   });
 

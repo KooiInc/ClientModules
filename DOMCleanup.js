@@ -135,15 +135,17 @@ const cleanupHtml = elem => {
   el2Clean.querySelectorAll("*").forEach(child => {
     [...child.attributes]
       .forEach(attr => {
-        if (notAllowedAttributeValues.test(attr.value.trim())) {
+        const isEvil = {
+          values: notAllowedAttributeValues.test(attr.value.trim()),
+          attrib: notAllowedAttributes.test(attr.name.trim()), };
+        if (isEvil.values) {
           console.info(`DOM cleanup message: attribute [${attr.value}] with value [${attr.value}] removed`);
           child.removeAttribute(attr.name);
-        }
-        if (notAllowedAttributes.test(attr.name.trim())) {
+        } else if (isEvil.attrib) {
           console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
           child.removeAttribute(attr.name);
         }
-      });
+    });
     const tagInSet = cleanupTagInfo.isAllowed(child);
     if (!tagInSet) {
       log && console.info(`DOM cleanup message: tag [${child.nodeName.toLowerCase()}] removed`);
