@@ -454,9 +454,15 @@ const append = {
  * @type {{fn: single.fn}}
  */
 const single = {
-  fn: (extCollection, index = 0) => {
-    if (extCollection.collection.length > 0 && index < extCollection.collection.length) {
-      return new extCollection.constructor(extCollection.collection[index]);
+  fn: (extCollection, indexOrSelector = "0") => {
+    if (extCollection.collection.length > 0) {
+      if (isNaN(+indexOrSelector) && extCollection.find(indexOrSelector)) {
+        return extCollection.find$(indexOrSelector);
+      }
+      const index = +indexOrSelector;
+      return index < extCollection.collection.length
+        ? new extCollection.constructor(extCollection.collection[indexOrSelector])
+        : extCollection;
     } else {
       return extCollection;
     }
@@ -487,7 +493,7 @@ const first = {
  * @type {{fn: first.fn}}
  */
 const first$ = {
-  fn: (extCollection) => extCollection.single()
+  fn: (extCollection, indexOrSelector) => extCollection.single(indexOrSelector)
 };
 
 /**
@@ -508,7 +514,7 @@ const find = {
 const find$ = {
   fn: (extCollection, selector) => {
     const firstElem = extCollection.first();
-    return firstElem && new extCollection.constructor(firstElem.querySelectorAll(selector));
+    return firstElem && selector && new extCollection.constructor(firstElem.querySelector(selector)) || null;
   }
 };
 
