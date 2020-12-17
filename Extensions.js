@@ -324,7 +324,7 @@ const html = {
       }
       return "";
     }
-    // topLevel only
+
     if (extCollection.collection.length) {
       const el2Change = extCollection.first();
       if (htmlValue.trim().length < 1) {
@@ -339,6 +339,7 @@ const html = {
         }
       }
     }
+
     return extCollection;
   }
 };
@@ -396,15 +397,15 @@ const each = {
 
 /**
  * Retrieve the value of an input element (if applicable)
- * @type {{fn: (function(*, *=): *)}}
+ * @type {{fn: (function(*, *=): (null|*))}}
  */
 const val = {
-  fn: (extCollection, value = null) => {
+  fn: (extCollection, value2Set = null) => {
     const firstElem = extCollection.first();
     if (!firstElem) { return null; }
     if ([HTMLInputElement, HTMLSelectElement].includes(firstElem.constructor)) {
-      if (value) {
-        firstElem.value = value;
+      if (value2Set) {
+        firstElem.value = value2Set;
       }
       return firstElem.value;
     }
@@ -420,11 +421,29 @@ const val = {
 const replace = {
   fn: (extCollection, selector, replaceElem) => {
     const firstElem = extCollection.first();
-    const el2Replace = firstElem.querySelector(selector);
-    if (el2Replace && replaceElem) {
-      console.log(el2Replace, replaceElem, firstElem);
-      firstElem.replaceChild(el2Replace, replaceElem);
+    if (firstElem) {
+      const el2Replace = firstElem.querySelector(selector);
+      if (el2Replace && replaceElem) {
+        firstElem.replaceChild(el2Replace, replaceElem);
+      }
     }
+    return extCollection;
+  },
+}
+
+/**
+ * Append something to the first element of [extCollection]
+ * @type {{fn: append.fn}}
+ */
+const append = {
+  fn: (extCollection, elem2Append) => {
+    const firstElem = extCollection.first();
+    if (firstElem) {
+      if (elem2Append) {
+        firstElem.appendChild(elem2Append);
+      }
+    }
+    return extCollection;
   },
 }
 
