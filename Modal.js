@@ -1,3 +1,4 @@
+// the html generated from this library is always sanitized
 import {createElementFromHtmlString, setTagPermission} from "//cdn.nicon.nl/Modules/DOM.js";
 
 const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") => {
@@ -9,18 +10,17 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   }
   const isTouchDevice = "ontouchstart" in document.documentElement;
   const clickOrTouch =  isTouchDevice ? "touchend" : "click";
-  const positionStuff = (theBox, theOkBttn) => {
-    theBox.style.display = "block";
-    theBox.classList.add("isDone");
-    if(theOkBttn) {
-      theOkBttn.style.position = "fixed";
-      theOkBttn.style.left = `${(theBox.offsetWidth) - 18}px`;
+  const positionStuff = (theBox, closerHandle) => {
+    theBox.classList.add("showAndCenter");
+    if(closerHandle) {
+      closerHandle.style.position = "fixed";
+      closerHandle.style.left = `${(theBox.offsetWidth) - 18}px`;
     }
 
     if (theBox.offsetHeight <= 50) {
       theBox.style.padding = "8px";
-      if (theOkBttn) {
-        theOkBttn.style.left = `${(theBox.offsetWidth) - 12}px`;
+      if (closerHandle) {
+        closerHandle.style.left = `${(theBox.offsetWidth) - 12}px`;
       }
     }
   };
@@ -33,7 +33,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     const betweenLayer = createElementFromHtmlString(`<div class="between"></div>`);
     document.body.appendChild(betweenLayer);
     const modalBox = createElementFromHtmlString( `
-      <div class="alertBox centeredHV">
+      <div class="alertBox">
         <div data-modalcontent>${message}</div>
       </div>` );
 
@@ -68,6 +68,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
         <link id="modalcss" href="${styleSheetLocation}" rel="stylesheet"/>` );
       document.querySelector("head").appendChild(cssLink);
     }
+    setTagPermission("link", false);
   }
 
   document.addEventListener(clickOrTouch, evt => {
