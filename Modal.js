@@ -38,7 +38,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
       </div>` );
 
     if (!omitOkBttn) {
-      okIcon = createElementFromHtmlString(`<span id="closer" class="okHandle"></span>`);
+      okIcon = createElementFromHtmlString(`<span id="closer" class="closeHandleIcon"></span>`);
       modalBox.insertBefore(okIcon, modalBox.firstChild);
     }
 
@@ -63,7 +63,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
   function addCssIfNotAlreadyAdded() {
     setTagPermission("link", true);
     // this enables users to use their own stylesheet (name should end with modal.css)
-    if (![...document.styleSheets].find(sheet => /modal\.css$/i.test(sheet.href))) {
+    if (![...document.styleSheets].find(sheet => sheet.id === "modalcss")) {
       const cssLink = createElementFromHtmlString(`
         <link id="modalcss" href="${styleSheetLocation}" rel="stylesheet"/>` );
       document.querySelector("head").appendChild(cssLink);
