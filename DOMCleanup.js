@@ -123,7 +123,7 @@ const cleanupTagInfo = {
   }
 };
 
-// regex not allowed attributes
+// regexex not allowed attributes/attribute values
 let notAllowedAttributes = /(^action|allow|contenteditable|data$)|(^on)|download|formaction|form|autofocus|poster|source|dirname|srcdoc|srcset|xlink|for|event|xmlns/i;
 let notAllowedAttributeValues = /javascript|injected|import|noreferrer|alert|DataURL/i;
 
@@ -135,13 +135,12 @@ const cleanupHtml = elem => {
   el2Clean.querySelectorAll("*").forEach(child => {
     [...child.attributes]
       .forEach(attr => {
-        const isEvil = {
-          values: notAllowedAttributeValues.test(attr.value.trim()),
-          attrib: notAllowedAttributes.test(attr.name.trim()), };
-        if (isEvil.values) {
-          console.info(`DOM cleanup message: attribute [${attr.value}] with value [${attr.value}] removed`);
+          const evilValues = notAllowedAttributeValues.test(attr.value.trim());
+          const evilAttrib = notAllowedAttributes.test(attr.name.trim());
+        if (evilValues) {
+          console.info(`DOM cleanup message: attribute [${attr.name}] with value [${attr.value}] removed`);
           child.removeAttribute(attr.name);
-        } else if (isEvil.attrib) {
+        } else if (evilAttrib) {
           console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
           child.removeAttribute(attr.name);
         }
