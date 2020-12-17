@@ -300,6 +300,7 @@ const is ={
  * @returns {*|string}
  */
 const empty = el => el && (el.textContent = "");
+const clear = empty;
 
 /**
  * check if element(s) exist
@@ -524,6 +525,6 @@ const extensions = {
   toggleClass, addClass, removeClass, attr, removeAttr,
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
-  isEmpty, val, hasClass, is, replace, swapClass};
+  isEmpty, val, hasClass, is, replace, swapClass, clear};
 
 export { loop,  extensions, };
