@@ -27,7 +27,6 @@ import {
 
 // the prototype initializer
 const initializePrototype = (ctor, extensions) => {
-  // more complex prototype methods
   Object.entries(extensions).forEach(([key, lambda]) => {
     ctor.prototype[key] = function (...args) {
       return lambda.fn
