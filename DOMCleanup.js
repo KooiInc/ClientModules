@@ -136,12 +136,10 @@ const cleanupHtml = elem => {
     [...child.attributes]
       .forEach(attr => {
         if (notAllowedAttributeValues.test(attr.value.trim())) {
-          //log &&
           console.info(`DOM cleanup message: attribute [${attr.value}] with value [${attr.value}] removed`);
           child.removeAttribute(attr.name);
         }
         if (notAllowedAttributes.test(attr.name.trim())) {
-          //log &&
           console.info(`DOM cleanup message: attribute [${attr.name}] removed`);
           child.removeAttribute(attr.name);
         }
