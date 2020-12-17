@@ -33,7 +33,7 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     const betweenLayer = createElementFromHtmlString(`<div class="between"></div>`);
     document.body.appendChild(betweenLayer);
     const modalBox = createElementFromHtmlString( `
-      <div class="alertBox centeredHV" style="display:none">
+      <div class="alertBox centeredHV">
         <div data-modalcontent>${message}</div>
       </div>` );
 

@@ -37,10 +37,6 @@
     transition: opacity ease-in-out 0.6s 0s;
 }
 
-/*.alertBox.reallyModal {*/
-/*    padding-right: 15px;*/
-/*}*/
-
 .alertBox div[data-modalcontent] {
     overflow: auto;
     max-height: inherit;
