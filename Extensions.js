@@ -105,11 +105,11 @@ const addHandler = (() => {
     }
   };
 
-  return (extCollection, type, selectorOrCb, callback, includeParent) => {
+  return (extCollection, type, selectorOrCb, callback) => {
     if (!Object.keys(handlers).find(t => t === type)) {
       document.addEventListener(type, metaHandler);
     }
-    const fn = handlerFnFactory(extCollection, selectorOrCb, callback, includeParent);
+    const fn = handlerFnFactory(extCollection, selectorOrCb, callback);
     handlers = handlers[type]
       ? { ...handlers, [type]: handlers[type].concat(fn) }
       : { ...handlers, [type]: [fn] };
@@ -526,8 +526,8 @@ const find$ = {
  * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
  */
 const on = {
-  fn: (extCollection, type, selectorOrCb, callback, includeParent = false) => {
-    addHandler(extCollection, type, selectorOrCb, callback, includeParent);
+  fn: (extCollection, type, selectorOrCb, callback) => {
+    addHandler(extCollection, type, selectorOrCb, callback);
     return extCollection;
   }
 };
