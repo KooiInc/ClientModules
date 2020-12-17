@@ -25,27 +25,6 @@ import {
   loop,
 } from "./Extensions.js";
 
-// no need for this?
-const copyNativeProtos = ctor => {
-  //copy Element prototype methods
-  Object.entries(Object.getOwnPropertyDescriptors(Element.prototype))
-    .filter(propDescriptr => propDescriptr.value instanceof Function)
-    .forEach(([key, {value}]) =>
-      ctor.prototype[key] = requestAnimationFrame(function (...args) {
-        return loop(this, elem => value.apply(elem, args));
-      }));
-
-  // copy NodeList prototype methods
-  Object.entries(Object.getOwnPropertyDescriptors(NodeList.prototype))
-    .filter(propDescriptr => propDescriptr.value instanceof Function)
-    .forEach(([key]) => {
-      ctor.prototype[key] = function (lambda) {
-        this.collection[key](lambda);
-        return this;
-      };
-    });
-}
-
 // the prototype initializer
 const initializePrototype = (ctor, extensions) => {
   // more complex prototype methods
@@ -56,7 +35,6 @@ const initializePrototype = (ctor, extensions) => {
         : loop(this, el => lambda(el, ...args));
     };
   });
-
   ctor.prototype.isSet = true;
 };
 
