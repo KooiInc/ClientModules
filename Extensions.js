@@ -419,14 +419,21 @@ const val = {
  * @type {{fn: replace.fn}}
  */
 const replace = {
-  fn: (extCollection, selector, replaceElem) => {
+  fn: (extCollection, oldChild, newChild) => {
     const firstElem = extCollection.first();
+
+    if (newChild.constructor === extCollection.constructor) {
+      newChild = newChild.first();
+    }
+
     if (firstElem) {
-      const el2Replace = firstElem.querySelector(selector);
-      if (el2Replace && replaceElem) {
-        firstElem.replaceChild(el2Replace, replaceElem);
+      oldChild = firstElem.querySelector(oldChild);
+
+      if (oldChild && newChild) {
+        oldChild.replaceWith(newChild);
       }
     }
+
     return extCollection;
   },
 }
@@ -438,14 +445,36 @@ const replace = {
 const append = {
   fn: (extCollection, elem2Append) => {
     const firstElem = extCollection.first();
-    if (firstElem) {
-      if (elem2Append) {
-        firstElem.appendChild(elem2Append);
-      }
+
+    if (elem2Append instanceof extCollection.constructor) {
+      elem2Append = elem2Append.first();
     }
+
+    if (firstElem && elem2Append) {
+      firstElem.appendChild(elem2Append);
+    }
+
     return extCollection;
   },
-}
+};
+
+/**
+ * Append element to some other extCollection
+ * @type {{fn: append.fn}}
+ */
+const appendTo = {
+  fn: (extCollection, extCollection2AppendTo) => {
+    const firstElem = extCollection.first();
+
+    if ( extCollection2AppendTo.constructor !== extCollection.constructor ) {
+      extCollection2AppendTo = new extCollection.constructor(extCollection2AppendTo);
+    }
+
+    extCollection2AppendTo.append(extCollection);
+
+    return extCollection2AppendTo;
+  },
+};
 
 /**
  * return [el] with index [index] from the
@@ -550,6 +579,7 @@ const extensions = {
   toggleClass, addClass, removeClass, attr, removeAttr,
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
-  isEmpty, val, hasClass, is, replace, swapClass, clear};
+  isEmpty, val, hasClass, is, swapClass, clear, append,
+  replace, appendTo};
 
 export { loop,  extensions, };
