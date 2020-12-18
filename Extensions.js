@@ -601,8 +601,16 @@ const on = {
  * @returns {*}
  */
 const prop = {
-  fn: (extCollection, property) =>
-        extCollection.first() && extCollection.first()[property],
+  fn: (extCollection, property, value) => {
+    const firstElem = extCollection.first();
+    if (firstElem && property in firstElem) {
+      if (value) {
+        firstElem[property] = value;
+      }
+      return firstElem[property];
+    }
+    return null;
+  },
 };
 
 
