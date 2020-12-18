@@ -601,10 +601,8 @@ const on = {
  * @returns {*}
  */
 const prop = {
-  fn: (extCollection, el, property) => {
-    console.log(property, extCollection.first(), extCollection.first()[property])
-    return extCollection.first() && extCollection.first()[property]
-  }
+  fn: (extCollection, property) =>
+        extCollection.first() && extCollection.first()[property],
 };
 
 
