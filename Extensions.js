@@ -487,6 +487,7 @@ const appendTo = {
 const insert = {
   fn: (extCollection, elem, insertBeforeElem) => {
     const firstElem = extCollection.first();
+    console.log(firstElem)
 
     if (insertBeforeElem) {
       insertBeforeElem = insertBeforeElem.constructor === String
@@ -594,6 +595,17 @@ const on = {
 };
 
 /**
+ * Return property/attribute [prop] of first element from collection
+ * @param el
+ * @param prop
+ * @returns {*}
+ */
+const prop = {
+  fn: (extCollection, el, prop) => extCollection.first() && extCollection.first()[prop]
+};
+
+
+/**
  * add delegated handler(s) for event [type]
  * using one or more [callbacks].
  * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
@@ -612,6 +624,6 @@ const extensions = {
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
   isEmpty, val, hasClass, is, swapClass, clear, append,
-  replace, appendTo, insert};
+  replace, appendTo, insert, prop};
 
 export { loop,  extensions, };
