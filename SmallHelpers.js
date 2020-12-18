@@ -16,6 +16,23 @@ const Logger = () => {
     return (...logLines) => logLines.forEach(ll => console.log(`* `, ll));
   }
 };
+const time2Fragments = (milliseconds) => {
+  milliseconds = Math.abs(milliseconds);
+  let secs = Math.floor(Math.abs(milliseconds) / 1000);
+  let mins = Math.floor(secs / 60);
+  let hours = Math.floor(mins / 60);
+  let days = Math.floor(hours / 24);
+  const millisecs = Math.floor(Math.abs(milliseconds)) % 1000;
+
+  return {
+    days: days,
+    hours: hours % 24,
+    minutes: mins % 60,
+    seconds: secs % 60,
+    milliSeconds: millisecs,
+  };
+};
+
 export {
   cleanWhitespace,
   toZeroPaddedEuropeanDate,
@@ -23,4 +40,5 @@ export {
   displayHour,
   throwIf,
   Logger,
+  time2Fragments,
 };
