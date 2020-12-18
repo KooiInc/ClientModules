@@ -414,7 +414,7 @@ const val = {
 }
 
 /**
- * replace elem with replaceElem
+ * replace [oldChild] with [newChild]
  * multiple todo (replace with htmlstr, chainable)
  * @type {{fn: replace.fn}}
  */
@@ -426,8 +426,12 @@ const replace = {
       newChild = newChild.first();
     }
 
-    if (firstElem) {
-      oldChild = firstElem.querySelector(oldChild);
+    if (firstElem && oldChild) {
+      oldChild = oldChild.constructor === String
+          ? firstElem.querySelector(oldChild)
+          : oldChild.constructor === extCollection.constructor
+            ? oldChild.first()
+            : oldChild;
 
       if (oldChild && newChild) {
         oldChild.replaceWith(newChild);
@@ -473,6 +477,30 @@ const appendTo = {
     extCollection2AppendTo.append(extCollection);
 
     return extCollection2AppendTo;
+  },
+};
+
+/**
+ * insert element before other element, or first of collection
+ * @type {{fn: append.fn}}
+ */
+const insert = {
+  fn: (extCollection, elem, insertBeforeElem) => {
+    const firstElem = extCollection.first();
+
+    if ( elem.constructor !== extCollection.constructor ) {
+      elem = new extCollection.constructor(elem);
+    }
+
+    if ( insertBeforeElem && insertBeforeElem.constructor !== extCollection.constructor ) {
+      insertBeforeElem = new extCollection.constructor(insertBeforeElem);
+    } else {
+      insertBeforeElem = firstElem.childNodes[0];
+    }
+
+    firstElem.insertBefore(elem, insertBeforeElem);
+
+    return extCollection;
   },
 };
 
@@ -580,6 +608,6 @@ const extensions = {
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
   isEmpty, val, hasClass, is, swapClass, clear, append,
-  replace, appendTo};
+  replace, appendTo, insert};
 
 export { loop,  extensions, };
