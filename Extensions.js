@@ -488,14 +488,18 @@ const insert = {
   fn: (extCollection, elem, insertBeforeElem) => {
     const firstElem = extCollection.first();
 
-    if ( elem.constructor !== extCollection.constructor ) {
-      elem = new extCollection.constructor(elem);
-    }
-
-    if ( insertBeforeElem && insertBeforeElem.constructor !== extCollection.constructor ) {
-      insertBeforeElem = new extCollection.constructor(insertBeforeElem);
+    if (insertBeforeElem) {
+      insertBeforeElem = insertBeforeElem.constructor === String
+        ? firstElem.querySelector(insertBeforeElem)
+        : insertBeforeElem.constructor === extCollection.constructor
+          ? insertBeforeElem.first()
+          : insertBeforeElem;
     } else {
       insertBeforeElem = firstElem.childNodes[0];
+    }
+
+    if ( elem.constructor === extCollection.constructor ) {
+      elem = elem.first();
     }
 
     firstElem.insertBefore(elem, insertBeforeElem);
