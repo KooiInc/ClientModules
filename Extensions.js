@@ -487,7 +487,6 @@ const appendTo = {
 const insert = {
   fn: (extCollection, elem, insertBeforeElem) => {
     const firstElem = extCollection.first();
-    console.log(firstElem)
 
     if (insertBeforeElem) {
       insertBeforeElem = insertBeforeElem.constructor === String
