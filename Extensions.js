@@ -96,8 +96,8 @@ const addHandler = (() => {
     return evt => {
 
       if (!extCollection.isEmpty() && maybeSelectorOrCallback instanceof Function) {
-        console.log(`adding for`, extCollection.first());
-        return evt.target === extCollection.first() && maybeSelectorOrCallback(evt);
+        const firstElem = extCollection.first();
+        return evt.target === firstElem && maybeSelectorOrCallback(evt);
       }
 
       const target = !(maybeSelectorOrCallback instanceof Function) &&
