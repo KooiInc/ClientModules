@@ -49,7 +49,7 @@ const {$, util} = (() => {
     }
 
     this.collection = [];
-    this.cssSelector = inputObject.trim && inputObject || null;
+    this.cssSelector = inputObject && inputObject.trim && inputObject || null;
     const cleanupAndAppendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
       !(elem || {dataset: {}}).dataset["elementInvalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
     );
