@@ -94,12 +94,6 @@ const addHandler = (() => {
    */
   const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback) => {
     return evt => {
-
-      if (!extCollection.isEmpty() && maybeSelectorOrCallback instanceof Function) {
-        const firstElem = extCollection.first();
-        return evt.target === firstElem && maybeSelectorOrCallback(evt);
-      }
-
       const target = !(maybeSelectorOrCallback instanceof Function) &&
           evt.target.closest(maybeSelectorOrCallback);
       if (target || maybeSelectorOrCallback instanceof Function) {
@@ -115,6 +109,7 @@ const addHandler = (() => {
     if (!Object.keys(handlers).find(t => t === type)) {
       document.addEventListener(type, metaHandler);
     }
+
     const fn = handlerFnFactory(extCollection, selectorOrCb, callback);
     handlers = handlers[type]
       ? { ...handlers, [type]: handlers[type].concat(fn) }
@@ -313,7 +308,7 @@ const clear = empty;
  * @type {{fn: (function(*): boolean)}}
  */
 const isEmpty = {
-  fn: extCollection => !!extCollection.collection.length,
+  fn: extCollection => extCollection.collection.length < 1,
 };
 
 /**
@@ -586,20 +581,6 @@ const find$ = {
 };
 
 /**
- * add handler for event [type] using a selector
- * for subelements or a callback [selectorOrCb].
- * With a css selector optionally include the element
- * the handler is defined for [includeParent]
- * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
- */
-const on = {
-  fn: (extCollection, type, selectorOrCb, callback) => {
-    addHandler(extCollection, type, selectorOrCb, callback);
-    return extCollection;
-  }
-};
-
-/**
  * Return property/attribute [prop] of first element from collection
  * @param el
  * @param prop
@@ -618,6 +599,25 @@ const prop = {
   },
 };
 
+/**
+ * add handler for event [type] using a selector
+ * for subelements or a callback [selectorOrCb].
+ * With a css selector optionally include the element
+ * the handler is defined for [includeParent]
+ * Note: you can only add handlers using a css-selector
+ *   e.g. $("#someElem").on("click", someHandlerFunction)
+ *   => it does not matter if $("#someElem") exists
+ * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
+ */
+const on = {
+  fn: (extCollection, type, selectorOrCb, callback) => {
+    const forThisSelector = selectorOrCb instanceof Function && extCollection.cssSelector ? true : false;
+    callback = forThisSelector ? selectorOrCb : callback;
+    selectorOrCb = forThisSelector ? extCollection.cssSelector : selectorOrCb;
+    addHandler(extCollection, type, selectorOrCb, callback);
+    return extCollection;
+  }
+};
 
 /**
  * add delegated handler(s) for event [type]
