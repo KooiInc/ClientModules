@@ -94,6 +94,12 @@ const addHandler = (() => {
    */
   const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback) => {
     return evt => {
+
+      if (!extCollection.isEmpty() && maybeSelectorOrCallback instanceof Function) {
+        console.log(`adding for`, extCollection.first());
+        return evt.target === extCollection.first() && maybeSelectorOrCallback(evt);
+      }
+
       const target = !(maybeSelectorOrCallback instanceof Function) &&
           evt.target.closest(maybeSelectorOrCallback);
       if (target || maybeSelectorOrCallback instanceof Function) {
