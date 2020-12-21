@@ -632,8 +632,28 @@ const on = {
  */
 const ON = {
   fn: (extCollection, type, ...callbacks) => {
-    console.log("fuck webpack");
     callbacks.forEach(cb => addHandler(extCollection, type, cb));
+    return extCollection;
+  }
+};
+
+/**
+ * add delegated handlers for multiple event types
+ * e.g. typesAndCallbacks => {click: [handler1, handler2], change: [handlerx]}
+ * using one or more [callbacks].
+ * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
+ */
+const onAll = {
+  fn: (extCollection, typesAndCallbacks) => {
+    if (typesAndCallbacks) {
+      Object.entries(typesAndCallbacks).forEach( ([key, handlers]) => {
+        if (handlers.constructor === Array && handlers.length) {
+          handlers.forEach( handler => handler instanceof Function && addHandler(extCollection, key, handler));
+        } else if (handlers instanceof Function) {
+          addHandler(extCollection, key, handlers);
+        }
+      });
+    }
     return extCollection;
   }
 };
@@ -645,6 +665,6 @@ const extensions = {
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
   isEmpty, val, hasClass, is, swapClass, clear, append,
-  replace, appendTo, insert, prop};
+  replace, appendTo, insert, prop, onAll};
 
 export { loop,  extensions, };
