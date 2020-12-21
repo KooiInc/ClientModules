@@ -154,7 +154,9 @@ const remove = el => el.parentNode && el.parentNode.removeChild(el);
 const hasClass = {
   fn: (extCollection, ...classNames) => {
     const firstElem = extCollection.first();
-    return classNames.find(name => firstElem.classList.contains(name));
+    return classNames.find(name => {
+      firstElem.classList.contains(name)
+    });
   },
 }
 
@@ -328,7 +330,7 @@ const html = {
 
     if (extCollection.collection.length) {
       const el2Change = extCollection.first();
-      if (htmlValue.trim().length < 1) {
+      if (`{htmlValue}`.trim().length < 1) {
         el2Change.textContent = "";
       } else {
         const nwElement = createElementFromHtmlString(`<div>${htmlValue}</div>`);
@@ -405,7 +407,7 @@ const val = {
     const firstElem = extCollection.first();
     if (!firstElem) { return null; }
     if ([HTMLInputElement, HTMLSelectElement].includes(firstElem.constructor)) {
-      if (value2Set) {
+      if (value2Set || typeof value2Set === "string") {
         firstElem.value = value2Set;
       }
       return firstElem.value;
@@ -456,7 +458,11 @@ const append = {
     }
 
     if (firstElem && elem2Append) {
-      firstElem.appendChild(elem2Append);
+      if (elem2Append.constructor === String) {
+        new extCollection.constructor(elem2Append, firstElem);
+      } else {
+        firstElem.appendChild(elem2Append);
+      }
     }
 
     return extCollection;
@@ -626,6 +632,7 @@ const on = {
  */
 const ON = {
   fn: (extCollection, type, ...callbacks) => {
+    console.log("fuck webpack");
     callbacks.forEach(cb => addHandler(extCollection, type, cb));
     return extCollection;
   }
