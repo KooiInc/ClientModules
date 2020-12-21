@@ -639,8 +639,8 @@ const ON = {
 
 /**
  * add delegated handlers for multiple event types
- * e.g. typesAndCallbacks => {click: [handler1, handler2], change: [handlerx]}
- * using one or more [callbacks].
+ * using one or more types and one or more callbacks.
+ * * e.g. typesAndCallbacks => {click: [handler1, handler2], change: handlerx}
  * @type {{fn: (function(*=, *=, *=, *=, *=): *)}}
  */
 const onAll = {
