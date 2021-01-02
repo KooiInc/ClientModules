@@ -34,17 +34,16 @@ const time2Fragments = (milliseconds) => {
 };
 // no map or forEach, to keep it (more) speedy
 const parseAllToTemplate = (objects2Parse, intoTemplate, fallback = String.fromCharCode(0)) => {
-  let lines = new Array(objects2Parse.length);
+  let lines = [...Array(objects2Parse.length)];
   for (let i = 0; i < objects2Parse.length; i += 1) {
     lines[i] = parseTemplate(intoTemplate, objects2Parse[i], fallback);
   }
   return lines.join("");
 };
 
-const parseTemplate = (template, map, fallback = String.fromCharCode(0)) =>{
-  return template.replace(/{[^}]+}/g, (match) =>
-    map[match.slice(1, -1)] || fallback || match);
-}
+const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
+  template.replace(/{[^}]+}/g, (match) =>
+    valuesMapping[match.slice(1, -1)] || fallback || match);
 
 export {
   cleanWhitespace,
