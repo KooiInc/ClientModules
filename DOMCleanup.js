@@ -102,6 +102,7 @@ const cleanupTagInfo = {
   rt: {name: "rt", allowed: true},
   ruby: {name: "ruby", allowed: true},
   s: {name: "s", allowed: true},
+  strike: {name: "strike", allowed: true, is: "deprecated"},
   samp: {name: "samp", allowed: true},
   small: {name: "small", allowed: true},
   strong: {name: "strong", allowed: true},
@@ -114,6 +115,7 @@ const cleanupTagInfo = {
   tt: {name: "tt", allowed: true},
   noscript: {name: "noscript", allowed: true},
   comment: {name: "comment", allowed: false},
+
   isAllowed(elem) {
     const tagInSet = Object.values(this)
       .find(tag => tag.elem && elem instanceof tag.elem ||
