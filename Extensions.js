@@ -15,6 +15,19 @@ const loop = (extCollection, callback) => {
 };
 
 /* region common helpers */
+(function createRandomStringExt() {
+  let characters = [...Array(26)]
+      .map((x, i) => String.fromCharCode(i + 65))
+      .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
+      .concat([...Array(10)].map((x, i) => `${i}`));
+  String.getRandom = (len = 12, excludes = []) => {
+    const chars = excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
+    return [...Array(len)]
+        .map(v => chars[Math.floor(Math.random() * chars.length)])
+        .join("");
+  };
+}());
+
 const isVisible = el => {
   const {currentStyle} = el;
   const computedStyle = currentStyle || getComputedStyle(el);
@@ -24,9 +37,9 @@ const isVisible = el => {
   const noOpacity = +computedStyle.opacity === 0;
 
   return offscreen || noOpacity || noDisplay || invisible
-    ? false
-    : !(el instanceof HTMLBodyElement)
-      ? isVisible(el.parentNode) : true;
+      ? false
+      : !(el instanceof HTMLBodyElement)
+          ? isVisible(el.parentNode) : true;
 };
 /* endregion common helpers */
 
@@ -50,9 +63,9 @@ const hex2RGBA = (hex, opacity = 100) => {
   hex = hex2Full(hex.slice(1));
   const op = opacity % 100 !== 0;
   return `rgb${op ? "a" : ""}(${
-    parseInt(hex.slice(0, 2), 16)}, ${
-    parseInt(hex.slice(2, 4), 16)}, ${
-    parseInt(hex.slice(-2), 16)}${op ? `, ${opacity/100}` : ""})`;
+      parseInt(hex.slice(0, 2), 16)}, ${
+      parseInt(hex.slice(2, 4), 16)}, ${
+      parseInt(hex.slice(-2), 16)}${op ? `, ${opacity/100}` : ""})`;
 };
 /** endregion */
 
@@ -94,17 +107,18 @@ const addHandler = (() => {
    */
   const handlerFnFactory = (extCollection, maybeSelectorOrCallback, callback) => {
     return evt => {
-      const target = !(maybeSelectorOrCallback instanceof Function) &&
-          evt.target.closest(maybeSelectorOrCallback);
+      const target = typeof maybeSelectorOrCallback !== "function" && evt.target.closest(maybeSelectorOrCallback);
+
       if (target || maybeSelectorOrCallback instanceof Function) {
         return maybeSelectorOrCallback instanceof Function
-          ? maybeSelectorOrCallback(evt, extCollection)
-          : callback(evt, extCollection);
+            ? maybeSelectorOrCallback(evt, extCollection)
+            : callback(evt, extCollection);
       }
       return false;
     }
   };
 
+  // addHandler lambda
   return (extCollection, type, selectorOrCb, callback) => {
     if (!Object.keys(handlers).find(t => t === type)) {
       document.addEventListener(type, metaHandler);
@@ -112,8 +126,8 @@ const addHandler = (() => {
 
     const fn = handlerFnFactory(extCollection, selectorOrCb, callback);
     handlers = handlers[type]
-      ? { ...handlers, [type]: handlers[type].concat(fn) }
-      : { ...handlers, [type]: [fn] };
+        ? { ...handlers, [type]: handlers[type].concat(fn) }
+        : { ...handlers, [type]: [fn] };
   };
 })();
 /* endregion */
@@ -168,7 +182,7 @@ const hasClass = {
  * @returns {*}
  */
 const removeClass = (el, ...classNames) =>
-  classNames.forEach( cn => el.classList.remove(cn) );
+    classNames.forEach( cn => el.classList.remove(cn) );
 
 /**
  * add [classNames] to [el]. Classnames may be single string
@@ -178,7 +192,7 @@ const removeClass = (el, ...classNames) =>
  * @returns {*}
  */
 const addClass = (el, ...classNames) =>
-  classNames.forEach( cn => el.classList.add(cn) );
+    el && classNames.forEach( cn => el.classList.add(cn) );
 
 /**
  * style [el]. css  must be key-value pairs
@@ -186,6 +200,7 @@ const addClass = (el, ...classNames) =>
  * @param keyOrKvPairs
  */
 const css = (el, keyOrKvPairs, value) => {
+  if (!el) { return true; }
   if (value) {
     keyOrKvPairs = {[keyOrKvPairs]: value === "empty" ? "" : value};
   }
@@ -200,7 +215,7 @@ const css = (el, keyOrKvPairs, value) => {
  */
 const data = (el, keyValuePairs) => {
   // noinspection JSValidateTypes
-  Object.entries(keyValuePairs).forEach( ([key, value]) => el.dataset[key] = value );
+  el && Object.entries(keyValuePairs).forEach( ([key, value]) => el.dataset[key] = value );
 }
 
 /**
@@ -209,13 +224,13 @@ const data = (el, keyValuePairs) => {
  * @param keyValuePairs
  */
 const assignAttrValues = (el, keyValuePairs) =>
-  Object.entries(keyValuePairs).forEach( ([key, value]) => {
-    if (key.toLowerCase() === "class") {
-      el.classList.add(`${value}`);
-    } else {
-      el[key] = value;
-    }
-  } );
+    el && Object.entries(keyValuePairs).forEach( ([key, value]) => {
+      if (key.toLowerCase() === "class") {
+        el.classList.add(`${value}`);
+      } else {
+        el[key] = value;
+      }
+    } );
 
 
 /**
@@ -226,32 +241,33 @@ const assignAttrValues = (el, keyValuePairs) =>
  * @param keyOrObj
  */
 const attr = (el, keyOrObj, value) => {
-    if (value) {
-      keyOrObj = {[keyOrObj]: value};
-    }
-
-    if (!value && keyOrObj.constructor === String) {
-      return el.getAttribute(keyOrObj);
-    }
-
-    Object.entries(keyOrObj).forEach(([key, value]) => {
-      const keyCompare = key.toLowerCase();
-
-      if (["style", "data"].includes(keyCompare)) {
-        if (keyCompare === "style") {
-          css(el, value);
-        } else if (keyCompare === "data") {
-          data(el, value);
-        }
-      } else {
-        if (value instanceof Object) {
-          assignAttrValues(el, value);
-        } else {
-          el.setAttribute(key, value);
-        }
-      }
-    });
+  if (!el) { return true; }
+  if (value) {
+    keyOrObj = {[keyOrObj]: value};
   }
+
+  if (!value && keyOrObj.constructor === String) {
+    return el.getAttribute(keyOrObj);
+  }
+
+  Object.entries(keyOrObj).forEach(([key, value]) => {
+    const keyCompare = key.toLowerCase();
+
+    if (["style", "data"].includes(keyCompare)) {
+      if (keyCompare === "style") {
+        css(el, value);
+      } else if (keyCompare === "data") {
+        data(el, value);
+      }
+    } else {
+      if (value instanceof Object) {
+        assignAttrValues(el, value);
+      } else {
+        el.setAttribute(key, value);
+      }
+    }
+  });
+}
 
 /**
  * set textValue for each element in the
@@ -285,6 +301,7 @@ const text = {
 const is ={
   fn:  (extCollection, checkValue) => {
     const firstElem = extCollection.first();
+    if (!firstElem) { return true; }
 
     switch(checkValue) {
       case ":visible": {
@@ -330,6 +347,7 @@ const html = {
 
     if (extCollection.collection.length) {
       const el2Change = extCollection.first();
+      if (!el2Change) { return ""; }
       if (`{htmlValue}`.trim().length < 1) {
         el2Change.textContent = "";
       } else {
@@ -354,16 +372,16 @@ const html = {
  * @param value
  */
 const toggleAttr = (el, name, value) =>
-  el.hasAttribute(name)
-    ? el.removeAttribute(name)
-    : el.setAttribute(name, value);
+    el && el.hasAttribute(name)
+        ? el.removeAttribute(name)
+        : el.setAttribute(name, value);
 
 /**
  * Remove some attribute from element
  * @param el
  * @param name
  */
-const removeAttr = (el, name) => el.removeAttribute(name);
+const removeAttr = (el, name) => el && el.removeAttribute(name);
 
 /**
  * toggle individual style properties for [el]
@@ -376,19 +394,19 @@ const removeAttr = (el, name) => el.removeAttribute(name);
  * @param keyValuePairs
  */
 const toggleStyleFragments = (el, keyValuePairs) =>
-  Object.entries(keyValuePairs).forEach( ([key, value]) => {
-    if (value instanceof Function) {
-      value = value(el);
-    }
+    el && Object.entries(keyValuePairs).forEach( ([key, value]) => {
+      if (value instanceof Function) {
+        value = value(el);
+      }
 
-    if (/color/i.test(key)) {
-      value = value.startsWith(`#`)
-        ? hex2RGBA(value)
-        : value.replace(/(,|,\s{2,})(\w)/g, (...args) => `, ${args[2]}`);
-    }
+      if (/color/i.test(key)) {
+        value = value.startsWith(`#`)
+            ? hex2RGBA(value)
+            : value.replace(/(,|,\s{2,})(\w)/g, (...args) => `, ${args[2]}`);
+      }
 
-    el.style[key] = `${el.style[key]}` === `${value}` ? "" : value;
-  });
+      el.style[key] = `${el.style[key]}` === `${value}` ? "" : value;
+    });
 
 /**
  * alias for loop
@@ -433,8 +451,8 @@ const replace = {
       oldChild = oldChild.constructor === String
           ? firstElem.querySelector(oldChild)
           : oldChild.constructor === extCollection.constructor
-            ? oldChild.first()
-            : oldChild;
+              ? oldChild.first()
+              : oldChild;
 
       if (oldChild && newChild) {
         oldChild.replaceWith(newChild);
@@ -475,8 +493,6 @@ const append = {
  */
 const appendTo = {
   fn: (extCollection, extCollection2AppendTo) => {
-    const firstElem = extCollection.first();
-
     if ( extCollection2AppendTo.constructor !== extCollection.constructor ) {
       extCollection2AppendTo = new extCollection.constructor(extCollection2AppendTo);
     }
@@ -494,13 +510,14 @@ const appendTo = {
 const insert = {
   fn: (extCollection, elem, insertBeforeElem) => {
     const firstElem = extCollection.first();
+    if (!firstElem) { return extCollection; }
 
     if (insertBeforeElem) {
       insertBeforeElem = insertBeforeElem.constructor === String
-        ? firstElem.querySelector(insertBeforeElem)
-        : insertBeforeElem.constructor === extCollection.constructor
-          ? insertBeforeElem.first()
-          : insertBeforeElem;
+          ? firstElem.querySelector(insertBeforeElem)
+          : insertBeforeElem.constructor === extCollection.constructor
+              ? insertBeforeElem.first()
+              : insertBeforeElem;
     } else {
       insertBeforeElem = firstElem.childNodes[0];
     }
@@ -529,8 +546,8 @@ const single = {
       }
       const index = +indexOrSelector;
       return index < extCollection.collection.length
-        ? new extCollection.constructor(extCollection.collection[indexOrSelector])
-        : extCollection;
+          ? new extCollection.constructor(extCollection.collection[indexOrSelector])
+          : extCollection;
     } else {
       return extCollection;
     }
@@ -547,8 +564,8 @@ const first = {
   fn: (extCollection, asExtCollection = false) => {
     if (extCollection.collection.length > 0) {
       return asExtCollection
-        ? extCollection.single()
-        : extCollection.collection[0];
+          ? extCollection.single()
+          : extCollection.collection[0];
     }
     return undefined;
   }
@@ -617,10 +634,16 @@ const prop = {
  */
 const on = {
   fn: (extCollection, type, selectorOrCb, callback) => {
-    const forThisSelector = selectorOrCb instanceof Function && extCollection.cssSelector ? true : false;
-    callback = forThisSelector ? selectorOrCb : callback;
-    selectorOrCb = forThisSelector ? extCollection.cssSelector : selectorOrCb;
-    addHandler(extCollection, type, selectorOrCb, callback);
+    let cssSelector = typeof selectorOrCb === "string" && selectorOrCb || null;
+    callback = selectorOrCb instanceof Function ? selectorOrCb : callback;
+
+    if (!cssSelector) {
+      const handleId = String.getRandom(8);
+      [...extCollection.collection].forEach(el => el.dataset.hid = handleId);
+      cssSelector = `[data-hid="${handleId}"]`;
+    }
+
+    addHandler(extCollection, type, cssSelector || callback, callback);
     return extCollection;
   }
 };
