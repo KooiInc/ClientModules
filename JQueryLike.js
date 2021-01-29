@@ -32,8 +32,8 @@ const initializePrototype = (ctor, extensions) => {
   Object.entries(extensions).forEach(([key, lambda]) => {
     ctor.prototype[key] = function (...args) {
       return lambda.fn
-        ? lambda.fn(this, ...args)
-        : loop(this, el => lambda(el, ...args));
+          ? lambda.fn(this, ...args)
+          : loop(this, el => lambda(el, ...args));
     };
   });
   ctor.prototype.isSet = true;
@@ -42,9 +42,9 @@ const initializePrototype = (ctor, extensions) => {
 // -------------------------------------------------------------------- //
 const {$, util} = (() => {
   function ExtendedNodeList(
-    inputObject,
-    root = document.body,
-    position = insertPositions.BeforeEnd) {
+      inputObject,
+      root = document.body,
+      position = insertPositions.BeforeEnd) {
 
     if (ExtendedNodeList.prototype.isSet === undefined) {
       initializePrototype(ExtendedNodeList, extensions);
@@ -53,11 +53,11 @@ const {$, util} = (() => {
     this.collection = [];
     this.cssSelector = inputObject && inputObject.trim && inputObject || null;
     const cleanupAndAppendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
-      !(elem || {dataset: {}}).dataset["elementInvalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
+        !(elem || {dataset: {}}).dataset["elementInvalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
     );
 
     const selectorRoot = root !== document.body &&
-      (inputObject.constructor === String &&
+    (inputObject.constructor === String &&
         inputObject.toLowerCase() !== "body") ? root : document;
 
     try {
@@ -91,7 +91,7 @@ const {$, util} = (() => {
     } catch (err) {
       const msg = `Caught jql selector or html error:\n${err.stack ? err.stack : err.message}`;
       log(msg);
-    //^ only if logStatus = on, so
+      //^ only if logStatus = on, so
       console.log(msg);
     }
   }
