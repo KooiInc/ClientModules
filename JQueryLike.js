@@ -1,5 +1,7 @@
-// centralized import
-// partly exported as [util]
+/*
+ centralized import
+ partly exported as [util]
+*/
 import {
   debugLog,
   log,
@@ -19,13 +21,13 @@ import {
   closestSibling,
 } from "./DOM.js";
 
-// local
+/* local */
 import {
   extensions,
   loop,
 } from "./Extensions.js";
 
-// the prototype initializer
+/* the prototype initializer */
 const initializePrototype = (ctor, extensions) => {
   Object.entries(extensions).forEach(([key, lambda]) => {
     ctor.prototype[key] = function (...args) {
