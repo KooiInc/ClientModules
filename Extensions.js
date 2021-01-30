@@ -626,7 +626,7 @@ const on = {
     let cssSelector = typeof selectorOrCb === "string" && selectorOrCb || null;
     callback = selectorOrCb instanceof Function ? selectorOrCb : callback;
 
-    if (!cssSelector) {
+    if (!cssSelector && extCollection.collection.length) {
       const handleId = String.getRandom(8);
       [...extCollection.collection].forEach(el => el.dataset.hid = handleId);
       cssSelector = `[data-hid="${handleId}"]`;
