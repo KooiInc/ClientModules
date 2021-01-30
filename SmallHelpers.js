@@ -41,6 +41,19 @@ const parseAllToTemplate = (objects2Parse, intoTemplate, fallback = String.fromC
   return lines.join("");
 };
 
+function randomStringExtension() {
+  let characters = [...Array(26)]
+      .map((x, i) => String.fromCharCode(i + 65))
+      .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
+      .concat([...Array(10)].map((x, i) => `${i}`));
+  String.getRandom = (len = 12, excludes = []) => {
+    const chars = excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
+    return [...Array(len)]
+        .map(v => chars[Math.floor(Math.random() * chars.length)])
+        .join("");
+  };
+}
+
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
     valuesMapping[match.slice(1, -1)] || fallback || match);
@@ -55,4 +68,5 @@ export {
   time2Fragments,
   parseAllToTemplate,
   parseTemplate,
+  randomStringExtension,
 };

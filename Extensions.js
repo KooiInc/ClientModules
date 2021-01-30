@@ -1,5 +1,5 @@
 import {createElementFromHtmlString} from "./DOM.js";
-
+import {randomStringExtension} from "./SmallHelpers.js";
 /**
  * iterator used for most
  * extensions. Also exposed as '[ExtCollection].each'
@@ -15,18 +15,7 @@ const loop = (extCollection, callback) => {
 };
 
 /* region common helpers */
-(function createRandomStringExt() {
-  let characters = [...Array(26)]
-      .map((x, i) => String.fromCharCode(i + 65))
-      .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
-      .concat([...Array(10)].map((x, i) => `${i}`));
-  String.getRandom = (len = 12, excludes = []) => {
-    const chars = excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
-    return [...Array(len)]
-        .map(v => chars[Math.floor(Math.random() * chars.length)])
-        .join("");
-  };
-}());
+randomStringExtension();
 
 const isVisible = el => {
   const {currentStyle} = el;
