@@ -2,7 +2,7 @@ let languages = { EN: "EN", NL: "NL", DE: "DE", FR: "FR",
   _current: "EN",
   default: "EN",
   set current(val) { this._current = this[val.toUpperCase()] || this.default; },
-  get current() { return this.current; },
+  get current() { return this._current; },
 };
 const setLang = (lang = "EN") => languages.current = lang;
 const months = {
