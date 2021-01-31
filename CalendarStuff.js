@@ -7,16 +7,16 @@ let languages = {
 };
 const setLang = (lang = "EN") => languages.current = lang;
 const months = {
-  NL: "januari,februari,maart,april,mei,juni,juli,augustus,september,oktober,november,december".split(","),
-  EN: "january,february,march,april,may,june,juli,august,september,october,november,december".split(","),
-  DE: "Januar Februar März April Mai Juni Juli August September Oktober November Dezember".split(" "),
-  FR: "Janvier Février Mars Avril Mai Juin Juillet Aôut Septembre Octobre Novembre Décembre".split(" "),
+  NL: "januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december".split(", "), 
+  EN: "january, february, march, april, may, june, juli, august, september, october, november, december".split(", "),
+  DE: "januar, februar, märz, april, mai, juni, juli, august, september, oktober, november, dezember".split(", "),
+  FR: "janvier, février, mars, avril, mai, juin, juillet, aôut, septembre, octobre, novembre, décembre".split(", "),
 };
 const weekDays = {
   NL: "Zondag, Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag".split(", "),
   EN: "Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday".split(", "),
-  DE: "Sontag Montag Dienstag Mittwoch Donnertag Freitag Samstag".split(" "),
-  FR: "Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi".split(" "),
+  DE: "Sontag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag".split(", "),
+  FR: "Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi".split(", "),
 
 };
 const weekDaysShort = {
