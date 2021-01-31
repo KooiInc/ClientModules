@@ -87,13 +87,6 @@ const getThisAndNextWeek = () => {
       isWeekend: isWeekend(v),
     }))
 };
-const allMonths = [...Array(11)]
-  .reduce((a) =>
-      ([...a, nextMonth(firstOfMonth(a.slice(-1)[0]))]),
-    [new Date(new Date(new Date().setMonth(0)).setDate(1))]);
-const monthsFromNow = () => [...Array(11 - new Date().getMonth())]
-  .reduce((a) => ([...a, nextMonth(firstOfMonth(a.slice(-1)[0]))]),
-    [new Date(new Date(new Date().setDate(1)))]);
 const timesOfDay = [...Array(24)].map((v, i) => `${i}`.padStart(2, `0`))
   .reduce((a, v) => ([...a, ...[`${v}:00`, `${v}:30`]]), []);
 
@@ -101,8 +94,6 @@ export {
   getMonth,
   month2Str,
   timesOfDay,
-  monthsFromNow,
-  allMonths,
   getNDaysFromNow,
   getThisAndNextWeek,
   isWeekend,
