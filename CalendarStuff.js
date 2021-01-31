@@ -30,7 +30,10 @@ const strings = { months, weekDays, weekDaysShort };
 const getStringFor = (type, value, lang = "EN") => strings[type][lang][value];
 const month2Str = m => getStringFor(types.month, m, languages.current);
 const weekDay2Str = wd => getStringFor(types.weekDay, wd, languages.current);
+// noinspection JSUnusedLocalSymbols
 const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
+// noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
+const yesterday = d => addDays(d, -1);
 const displayDate = v => languages.current === "EN" ?
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
@@ -39,7 +42,6 @@ const displayDate = v => languages.current === "EN" ?
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
 const tomorrow = d => addDays(d, 1);
-const yesterday = d => addDays(d, -1);
 const firstOfMonth = d => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
 const nextMonth = d => addMonths(d, 1);
 const lastDayOfThisMonth = forDate => {
@@ -51,7 +53,6 @@ const isWeekend = d => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
-  let now = new Date();
   let firstOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
   const nDates = lastDayOfThisMonth(firstOfMonth);
   return [...Array(nDates - 1)].reduce(a => ([...a, tomorrow(a.slice(-1)[0])]), [firstOfMonth]);
