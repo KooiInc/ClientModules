@@ -77,7 +77,7 @@ const getThisAndNextWeek = () => {
     .map(v => ({
       day: getStringFor(types.weekDay, v.getDay(), languages.current),
       date: v,
-      display: `${getStringFor(type.weekDay, v.getDay(), languages.current)} ${
+      display: `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
         v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${
         v.getFullYear()}`,
       isWeekend: isWeekend(v),
