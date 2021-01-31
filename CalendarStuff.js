@@ -1,4 +1,5 @@
-let languages = { EN: "EN", NL: "NL", DE: "DE", FR: "FR",
+let languages = {
+  EN: "EN", NL: "NL", DE: "DE", FR: "FR",
   _current: "EN",
   default: "EN",
   set current(val) { this._current = this[val.toUpperCase()] || this.default; },
@@ -24,34 +25,31 @@ const weekDaysShort = {
   DE: "So, Mo, Di, Mi, Do, Fr, Sa".split(", "),
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
-const types = {month: "months", weekDay: "weekDays", weekDayShort: "weekDaysShort"};
+const types = { month: "months", weekDay: "weekDays", weekDayShort: "weekDaysShort" };
 const strings = { months, weekDays, weekDaysShort };
 const getStringFor = (type, value, lang = "EN") => strings[type][lang][value];
 const month2Str = m => getStringFor(types.month, m, languages.current);
 const weekDay2Str = wd => getStringFor(types.weekDay, wd, languages.current);
 const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
-const addDays = (d, n) => new Date(new Date(d).setDate(d.getDate() + n));
-const addMonths = (d, n) => new Date(new Date(d).setMonth(d.getMonth() + n));
+const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
+const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
 const tomorrow = d => addDays(d, 1);
 const yesterday = d => addDays(d, -1);
-const firstOfMonth = d => new Date(new Date(d).setDate(1));
+const firstOfMonth = d => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
 const nextMonth = d => addMonths(d, 1);
-const lastDayOfThisMonth = now => yesterday(firstOfMonth(nextMonth(now)));
-const isWeekend = d => /sunday|saturday/i.test(weekDays[languages.EN][d.getDay()]);
-const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${
-  date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
+const lastDayOfThisMonth = forDate => {
+  let firstOfNextMonth = new Date(forDate);
+  firstOfNextMonth.setMonth(forDate.getMonth() + 1);
+  return addDays(firstOfNextMonth, -1).getDate();
+};
+const isWeekend = d => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
+const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const lpad = nr => `${nr}`.padStart(2, "0");
-const getMonth = (month = new Date().getUTCMonth()) => {
+const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
   let now = new Date();
-  const isCurrentMonth = now.getUTCMonth() === month;
-
-  if (!isCurrentMonth) {
-    now = firstOfMonth(new Date(now.setMonth(month - 1)));
-  }
-
-  const lastDate = lastDayOfThisMonth(now).getDate();
-  const nDates = (isCurrentMonth ? (lastDate - now.getDate() + 1) : lastDate) - 1;
-  return [...Array(nDates)].reduce(a => ([...a, tomorrow(a.slice(-1)[0])]), [now]);
+  let firstOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+  const nDates = lastDayOfThisMonth(firstOfMonth);
+  return [...Array(nDates - 1)].reduce(a => ([...a, tomorrow(a.slice(-1)[0])]), [firstOfMonth]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
@@ -77,9 +75,7 @@ const getThisAndNextWeek = () => {
     .map(v => ({
       day: getStringFor(types.weekDay, v.getDay(), languages.current),
       date: v,
-      display: `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
-        v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${
-        v.getFullYear()}`,
+      display: `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`,
       isWeekend: isWeekend(v),
     }))
 };
@@ -101,6 +97,7 @@ export {
   allMonths,
   getNDaysFromNow,
   getThisAndNextWeek,
+  isWeekend,
   formatDay,
   setLang,
 };
