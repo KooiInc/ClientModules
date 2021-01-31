@@ -43,7 +43,7 @@ const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), language
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getMonth()) => {
   let now = new Date();
-  const isCurrentMonth = now.getMonth() + 1 === month;
+  const isCurrentMonth = now.getUTCMonth() + 1 === month;
 
   if (!isCurrentMonth) {
     now = firstOfMonth(new Date(now.setMonth(month - 1)));
