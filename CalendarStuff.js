@@ -31,6 +31,11 @@ const getStringFor = (type, value, lang = "EN") => strings[type][lang][value];
 const month2Str = m => getStringFor(types.month, m, languages.current);
 const weekDay2Str = wd => getStringFor(types.weekDay, wd, languages.current);
 const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
+const displayDate = v => languages.current === "EN" ?
+  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
+      getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
+  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${
+      getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
 const tomorrow = d => addDays(d, 1);
@@ -60,9 +65,11 @@ const getNDaysFromNow = nDays => {
     .map(v => ({
       day: weekDay2Str(v.getDay()),
       dateOnly: `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()}`,
-      short: `${lpad(v.getDate())}/${lpad(v.getMonth() + 1)}`,
+      short: languages.current === "EN" ?
+        `${lpad(v.getMonth() + 1)}/${lpad(v.getDate())}` :
+        `${lpad(v.getDate())}/${lpad(v.getMonth() + 1)}`,
       date: v,
-      display: `${weekDay2ShortStr(v.getDay())} ${v.getDate()} ${month2Str(v.getMonth())}`,
+      display: displayDate(v),
       isWeekend: isWeekend(v),
     }))
 };
@@ -75,7 +82,7 @@ const getThisAndNextWeek = () => {
     .map(v => ({
       day: getStringFor(types.weekDay, v.getDay(), languages.current),
       date: v,
-      display: `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`,
+      display: displayDate(v),
       isWeekend: isWeekend(v),
     }))
 };
