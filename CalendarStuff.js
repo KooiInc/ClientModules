@@ -41,9 +41,9 @@ const isWeekend = d => /sunday|saturday/i.test(weekDays[languages.EN][d.getDay()
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${
   date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const lpad = nr => `${nr}`.padStart(2, "0");
-const getMonth = (month = new Date().getMonth()) => {
+const getMonth = (month = new Date().getUTCMonth()) => {
   let now = new Date();
-  const isCurrentMonth = now.getUTCMonth() + 1 === month;
+  const isCurrentMonth = now.getUTCMonth() === month;
 
   if (!isCurrentMonth) {
     now = firstOfMonth(new Date(now.setMonth(month - 1)));
