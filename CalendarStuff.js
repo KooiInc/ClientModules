@@ -74,7 +74,7 @@ const getNDaysFromNow = nDays => {
       isWeekend: isWeekend(v),
     }))
 };
-const getThisAndNextWeek = () => {
+const getTodayAndNextWeekFromToday = () => {
   let now = new Date();
   let days = [now];
   return [...Array(14)].reduce(a => {
@@ -85,17 +85,13 @@ const getThisAndNextWeek = () => {
       date: v,
       display: displayDate(v),
       isWeekend: isWeekend(v),
-    }))
+    }));
 };
-const timesOfDay = [...Array(24)].map((v, i) => `${i}`.padStart(2, `0`))
-  .reduce((a, v) => ([...a, ...[`${v}:00`, `${v}:30`]]), []);
-
 export {
   getMonth,
   month2Str,
-  timesOfDay,
   getNDaysFromNow,
-  getThisAndNextWeek,
+  getTodayAndNextWeekFromToday,
   isWeekend,
   formatDay,
   setLang,
