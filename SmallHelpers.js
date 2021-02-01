@@ -40,8 +40,7 @@ const parseAllToTemplate = (objects2Parse, intoTemplate, fallback = String.fromC
   }
   return lines.join("");
 };
-
-function randomStringExtension() {
+const randomStringExtension = () => {
   let characters = [...Array(26)]
       .map((x, i) => String.fromCharCode(i + 65))
       .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
@@ -53,7 +52,6 @@ function randomStringExtension() {
         .join("");
   };
 }
-
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
     valuesMapping[match.slice(1, -1)] || fallback || match);
