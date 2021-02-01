@@ -72,7 +72,7 @@ const getNDaysFromNow = nDays => {
       date: v,
       display: displayDate(v),
       isWeekend: isWeekend(v),
-    }))
+    }));
 };
 const getTodayAndNextWeekFromToday = () => {
   let now = new Date();
