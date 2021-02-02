@@ -60,7 +60,7 @@ const someDay = (someDate = new Date()) => ({
   date: someDate,
   display: displayDate(someDate),
   isWeekend: isWeekend(someDate),
-})
+});
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
   let firstOfMonth = someDay(new Date(Date.UTC(year, month - 1, 1, 0, 0, 0)));
@@ -72,7 +72,7 @@ const getNDaysFromNow = nDays => {
   let days = [now];
   return [...Array(nDays)].reduce(a => {
     return [...a, tomorrow(a.slice(-1)[0])];
-  }, days).map(v => someDay);
+  }, days).map(someDay);
 };
 const getTodayPlusNextWeek = () => {
   let now = new Date();
@@ -94,5 +94,6 @@ export {
   getTodayPlusNextWeek,
   isWeekend,
   formatDay,
+  someDay,
   setLang,
 };
