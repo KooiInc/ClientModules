@@ -1,8 +1,9 @@
 // the html generated from this library is always sanitized
 import {createElementFromHtmlString, setTagPermission} from "./DOM.js";
+import {addCssIfNotAlreadyAdded} from "./SmallHelpers.js";
 
 const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") => {
-  addCssIfNotAlreadyAdded();
+  addCssIfNotAlreadyAdded("modalcss", styleSheetLocation);
   let timer = null;
   const closeIfActive = () => {
     document.querySelector(".between")?.remove();
@@ -59,17 +60,6 @@ const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") =
     const remover = callback ? () => remove(callback) : remove;
     timer = setTimeout(remover, closeAfter * 1000);
   };
-
-  function addCssIfNotAlreadyAdded() {
-    setTagPermission("link", true);
-    // this enables users to use their own stylesheet (name should end with modal.css)
-    if (![...document.styleSheets].find(sheet => sheet.id === "modalcss")) {
-      const cssLink = createElementFromHtmlString(`
-        <link id="modalcss" href="${styleSheetLocation}" rel="stylesheet"/>` );
-      document.querySelector("head").appendChild(cssLink);
-    }
-    setTagPermission("link", false);
-  }
 
   document.addEventListener(clickOrTouch, evt => {
     const canClose = document.querySelector("#closer");
