@@ -6,12 +6,14 @@ const toZeroPaddedEuropeanDate = val => val.split("/").reverse().map(v => `${v}`
 const date2EuropeanDate = date => date.toISOString().split("T").shift().split("-").reverse().map(v => `${v}`.padStart(2, "0")).join("-");
 const displayHour = h => `${h}`.padStart(2, `0`) + `:00`;
 const throwIf = (assertion = false, message = `Unspecified error`, ErrorType = Error) =>
-  assertion && (() => { throw new ErrorType(message); })();
+  assertion && (() => {
+    throw new ErrorType(message);
+  })();
 const Logger = () => {
   let logEl;
   if (typeof window === "object") {
     logEl = document.querySelector("#log") || (() => {
-      document.body.append(Object.assign(document.createElement('pre'), {id:"log"}));
+      document.body.append(Object.assign(document.createElement('pre'), {id: "log"}));
       return document.querySelector("#log");
     })();
     return (...logLines) => logLines.forEach(s => logEl.textContent += `${s}\n`);
@@ -45,24 +47,25 @@ const parseAllToTemplate = (objects2Parse, intoTemplate, fallback = String.fromC
 };
 const randomStringExtension = () => {
   let characters = [...Array(26)]
-      .map((x, i) => String.fromCharCode(i + 65))
-      .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
-      .concat([...Array(10)].map((x, i) => `${i}`));
+    .map((x, i) => String.fromCharCode(i + 65))
+    .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
+    .concat([...Array(10)].map((x, i) => `${i}`));
   String.getRandom = (len = 12, excludes = []) => {
     const chars = excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
     return [...Array(len)]
-        .map(v => chars[Math.floor(Math.random() * chars.length)])
-        .join("");
+      .map(v => chars[Math.floor(Math.random() * chars.length)])
+      .join("");
   };
 }
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
     valuesMapping[match.slice(1, -1)] || fallback || match);
 const addCssIfNotAlreadyAdded = (cssId, styleSheetLocation) => {
+  const fileOrigin = /^file:/i.test(location.href);
   setTagPermission("link", true);
   if (![...document.styleSheets].find(sheet => sheet.id === cssId)) {
     const cssLink = createElementFromHtmlString(`
-        <link id="${cssId}" href="${styleSheetLocation}" rel="stylesheet"/>` );
+        <link id="${cssId}" href="${fileOrigin ? "https:" : ""}${styleSheetLocation}" rel="stylesheet"/>`);
     document.querySelector("head").appendChild(cssLink);
   }
   setTagPermission("link", false);
