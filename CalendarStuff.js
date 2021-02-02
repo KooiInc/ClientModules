@@ -49,13 +49,23 @@ const lastDayOfThisMonth = forDate => {
   firstOfNextMonth.setMonth(forDate.getMonth() + 1);
   return addDays(firstOfNextMonth, -1).getDate();
 };
-const isWeekend = d => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
+const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
+const someDay = (someDate = new Date()) => ({
+  day: weekDay2Str(someDate.getDay()),
+  dateOnly: `${someDate.getFullYear()}/${someDate.getMonth() + 1}/${someDate.getDate()}`,
+  short: languages.current === "EN" ?
+    `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
+    `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`,
+  date: someDate,
+  display: displayDate(someDate),
+  isWeekend: isWeekend(someDate),
+})
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
   let firstOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
   const nDates = lastDayOfThisMonth(firstOfMonth);
-  return [...Array(nDates - 1)].reduce(a => ([...a, tomorrow(a.slice(-1)[0])]), [firstOfMonth]);
+  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0]))]), [firstOfMonth]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
