@@ -55,7 +55,8 @@ const lastDayOfMonth = (month, year = 2000) => lastOfMonth(month, year).getDate(
 const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const someDay = (someDate = new Date()) => ({
-  day: [someDate.getDay(), weekDay2Str(someDate.getDay())],
+  day: weekDay2Str(someDate.getDay()),
+  dayDigit: someDate.getDay(),
   month: month2Str(someDate.getMonth()),
   dateOnly: dateOnlyStr(someDate),
   dateShort: dateShortStr(someDate),
