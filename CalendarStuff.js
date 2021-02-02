@@ -26,7 +26,7 @@ const weekDaysShort = {
   DE: "So, Mo, Di, Mi, Do, Fr, Sa".split(", "),
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
-const lpad = nr => `${nr}`.padStart(2, "0");
+const leftZeroPad = nr => `${nr}`.padStart(2, "0");
 const firstOfMonth = (month = 1, year = 2000) => new Date(Date.UTC(year, month - 1, 1));
 const lastOfMonth = (month = 1, year = 2000) => addDays(firstOfMonth(month + 1, year), -1);
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
@@ -39,10 +39,10 @@ const weekDay2Str = wd => getStringFor(types.weekDay, wd, languages.current);
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
 const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
 const dateOnlyStr = (someDate = new Date()) =>
-  `${someDate.getFullYear()}/${someDate.getMonth() + 1}/${someDate.getDate()}`;
+  `${someDate.getFullYear()}/${leftZeroPad(someDate.getMonth() + 1)}/${leftZeroPad(someDate.getDate())}`;
 const dateShortStr = (someDate = new Date()) => languages.current === "EN" ?
-  `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
-  `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`;
+  `${leftZeroPad(someDate.getMonth() + 1)}/${leftZeroPad(someDate.getDate())}` :
+  `${leftZeroPad(someDate.getDate())}/${leftZeroPad(someDate.getMonth() + 1)}`;
 const displayDate = v => languages.current === "EN" ?
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
