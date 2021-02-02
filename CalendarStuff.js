@@ -25,15 +25,22 @@ const weekDaysShort = {
   DE: "So, Mo, Di, Mi, Do, Fr, Sa".split(", "),
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
+const firstOfMonth = (someDate = new Date()) =>
+  new Date(Date.UTC(someDate.getUTCFullYear(), someDate.getUTCMonth(), 1, 0, 0, 0));
+// noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
+const nextMonth = (someDate = new Date()) => addMonths(someDate, 1);
 const types = { month: "months", weekDay: "weekDays", weekDayShort: "weekDaysShort" };
 const strings = { months, weekDays, weekDaysShort };
 const getStringFor = (type, value, lang = "EN") => strings[type][lang][value];
 const month2Str = m => getStringFor(types.month, m, languages.current);
 const weekDay2Str = wd => getStringFor(types.weekDay, wd, languages.current);
-// noinspection JSUnusedLocalSymbols
-const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
-const yesterday = d => addDays(d, -1);
+const weekDay2ShortStr = wd => getStringFor(types.weekDayShort, wd, languages.current);
+const dateOnlyStr = (someDate = new Date()) =>
+  `${someDate.getFullYear()}/${someDate.getMonth() + 1}/${someDate.getDate()}`;
+const dateShortStr = (someDate = new Date()) => languages.current === "EN" ?
+  `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
+  `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`
 const displayDate = v => languages.current === "EN" ?
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
@@ -41,9 +48,10 @@ const displayDate = v => languages.current === "EN" ?
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
-const tomorrow = d => addDays(d, 1);
-const firstOfMonth = d => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
-const nextMonth = d => addMonths(d, 1);
+// noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
+const yesterday = (someDate = new Date()) => addDays(someDate, -1);
+const tomorrow = (someDate = new Date()) => addDays(someDate, 1);
+
 const lastDayOfThisMonth = forDate => {
   let firstOfNextMonth = new Date(forDate);
   firstOfNextMonth.setMonth(forDate.getMonth() + 1);
@@ -51,21 +59,20 @@ const lastDayOfThisMonth = forDate => {
 };
 const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
+
 const someDay = (someDate = new Date()) => ({
-  day: weekDay2Str(someDate.getDay()),
-  dateOnly: `${someDate.getFullYear()}/${someDate.getMonth() + 1}/${someDate.getDate()}`,
-  short: languages.current === "EN" ?
-    `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
-    `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`,
+  day: [someDate.getDay(), weekDay2Str(someDate.getDay())],
+  dateOnly: dateOnlyStr(someDate),
+  dateShort: dateShortStr(someDate),
   date: someDate,
   display: displayDate(someDate),
   isWeekend: isWeekend(someDate),
 });
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
-  let firstOfMonth = someDay(new Date(Date.UTC(year, month - 1, 1, 0, 0, 0)));
-  const nDates = lastDayOfThisMonth(firstOfMonth.date);
-  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfMonth]);
+  let firstOfCurrentMonth = firstOfMonth(year, month);
+  const nDates = lastDayOfThisMonth(firstOfCurrentMonth.date);
+  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfCurrentMonth]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
@@ -80,12 +87,7 @@ const getTodayPlusNextWeek = () => {
   return [...Array(14)].reduce(a => {
     return [...a, tomorrow(a.slice(-1)[0])];
   }, days)
-    .map(v => ({
-      day: getStringFor(types.weekDay, v.getDay(), languages.current),
-      date: v,
-      display: displayDate(v),
-      isWeekend: isWeekend(v),
-    }));
+    .map(someDay);
 };
 export {
   getMonth,
