@@ -56,12 +56,14 @@ const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const someDay = (someDate = new Date()) => ({
   day: [someDate.getDay(), weekDay2Str(someDate.getDay())],
+  month: month2Str(someDate.getMonth()),
   dateOnly: dateOnlyStr(someDate),
   dateShort: dateShortStr(someDate),
   date: someDate,
   display: displayDate(someDate),
   isWeekend: isWeekend(someDate),
 });
+/** retrieve range of all dates of [month] in [year]. Note: [month] is NOT zero based */
 const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) => {
   let firstOfCurrentMonth = firstOfMonth(month, year);
   const nDates = lastDayOfMonth(month);
@@ -69,18 +71,19 @@ const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) =>
     .reduce(a =>
       ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [someDay(firstOfCurrentMonth)]);
 };
-const getNDaysFromNow = nDays => {
-  let now = new Date();
-  let days = [now];
+/** retrieve range of dates: [fromDate] plus or minus ([backward] true) [nDays] */
+const getNDaysFromDate = (nDays = 6, fromDate = now(), backward = false) => {
+  let days = [backward ? addDays(fromDate, nDays) : fromDate];
   return [...Array(nDays)].reduce(a => {
     return [...a, tomorrow(a.slice(-1)[0])];
   }, days).map(someDay);
 };
-const getTodayPlusNextWeek = () => getNDaysFromNow(7);
+
+const getTodayPlusNextWeek = () => getNDaysFrom(7);
 export {
   getMonth,
   month2Str,
-  getNDaysFromNow,
+  getNDaysFromDate,
   getTodayPlusNextWeek,
   isWeekend,
   formatDay,
