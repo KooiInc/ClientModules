@@ -63,26 +63,16 @@ const someDay = (someDate = new Date()) => ({
 })
 const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
-  let firstOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
-  const nDates = lastDayOfThisMonth(firstOfMonth);
-  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0]))]), [firstOfMonth]);
+  let firstOfMonth = someDay(new Date(Date.UTC(year, month - 1, 1, 0, 0, 0)));
+  const nDates = lastDayOfThisMonth(firstOfMonth.date);
+  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfMonth]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
   let days = [now];
   return [...Array(nDays)].reduce(a => {
     return [...a, tomorrow(a.slice(-1)[0])];
-  }, days)
-    .map(v => ({
-      day: weekDay2Str(v.getDay()),
-      dateOnly: `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()}`,
-      short: languages.current === "EN" ?
-        `${lpad(v.getMonth() + 1)}/${lpad(v.getDate())}` :
-        `${lpad(v.getDate())}/${lpad(v.getMonth() + 1)}`,
-      date: v,
-      display: displayDate(v),
-      isWeekend: isWeekend(v),
-    }));
+  }, days).map(v => someDay);
 };
 const getTodayPlusNextWeek = () => {
   let now = new Date();
