@@ -8,7 +8,7 @@ let languages = {
 /** string stuff */
 const setLang = (lang = "EN") => languages.current = lang;
 const months = {
-  NL: "januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december".split(", "), 
+  NL: "januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december".split(", "),
   EN: "january, february, march, april, may, june, juli, august, september, october, november, december".split(", "),
   DE: "januar, februar, märz, april, mai, juni, juli, august, september, oktober, november, dezember".split(", "),
   FR: "janvier, février, mars, avril, mai, juin, juillet, aôut, septembre, octobre, novembre, décembre".split(", "),
@@ -27,8 +27,8 @@ const weekDaysShort = {
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
 const lpad = nr => `${nr}`.padStart(2, "0");
-const firstOfMonth = month =>
-  new Date(Date.UTC(new Date().getUTCFullYear(), month, 1, 0, 0, 0));
+const firstOfMonth = (month = 1, year = 2000) => new Date(Date.UTC(year, month - 1, 1));
+const lastOfMonth = (month = 1, year = 2000) => addDays(firstOfMonth(month + 1, year), -1);
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
 const nextMonth = (someDate = new Date()) => addMonths(someDate, 1);
 const types = { month: "months", weekDay: "weekDays", weekDayShort: "weekDaysShort" };
@@ -44,20 +44,14 @@ const dateShortStr = (someDate = new Date()) => languages.current === "EN" ?
   `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
   `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`;
 const displayDate = v => languages.current === "EN" ?
-  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
-      getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
-  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${
-      getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
+  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
+  `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
 /** date retrieval methods */
 const now = () => new Date(new Date().toUTCString());
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
 const tomorrow = (someDate = new Date()) => addDays(someDate, 1);
-const lastDayOfThisMonth = forDate => {
-  let firstOfNextMonth = new Date(forDate);
-  firstOfNextMonth.setMonth(forDate.getMonth() + 1);
-  return addDays(firstOfNextMonth, -1).getDate();
-};
+const lastDayOfMonth = (month, year = 2000) => lastOfMonth(month, year).getDate();
 const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
 const someDay = (someDate = new Date()) => ({
@@ -69,11 +63,11 @@ const someDay = (someDate = new Date()) => ({
   isWeekend: isWeekend(someDate),
 });
 const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) => {
-  let firstOfCurrentMonth = firstOfMonth(month);
-  const nDates = lastDayOfThisMonth(firstOfCurrentMonth.date);
+  let firstOfCurrentMonth = firstOfMonth(month, year);
+  const nDates = lastDayOfMonth(month);
   return [...Array(nDates - 1)]
     .reduce(a =>
-      ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfCurrentMonth]);
+      ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [someDay(firstOfCurrentMonth)]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
