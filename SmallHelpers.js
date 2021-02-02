@@ -57,6 +57,7 @@ const randomStringExtension = () => {
       .join("");
   };
 }
+const repeat = (str, n) => Array(n).join(str);
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
     valuesMapping[match.slice(1, -1)] || fallback || match);
@@ -84,4 +85,5 @@ export {
   parseTemplate,
   randomStringExtension,
   addCssIfNotAlreadyAdded,
+  repeat,
 };
