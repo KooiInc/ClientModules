@@ -84,7 +84,7 @@ const getNDaysFromNow = nDays => {
       isWeekend: isWeekend(v),
     }));
 };
-const getTodayAndNextWeekFromToday = () => {
+const getTodayPlusNextWeek = () => {
   let now = new Date();
   let days = [now];
   return [...Array(14)].reduce(a => {
@@ -101,7 +101,7 @@ export {
   getMonth,
   month2Str,
   getNDaysFromNow,
-  getTodayAndNextWeekFromToday,
+  getTodayPlusNextWeek,
   isWeekend,
   formatDay,
   setLang,
