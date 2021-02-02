@@ -5,6 +5,7 @@ let languages = {
   set current(val) { this._current = this[val.toUpperCase()] || this.default; },
   get current() { return this._current; },
 };
+/** string stuff */
 const setLang = (lang = "EN") => languages.current = lang;
 const months = {
   NL: "januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december".split(", "), 
@@ -25,6 +26,7 @@ const weekDaysShort = {
   DE: "So, Mo, Di, Mi, Do, Fr, Sa".split(", "),
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
+const lpad = nr => `${nr}`.padStart(2, "0");
 const firstOfMonth = (someDate = new Date()) =>
   new Date(Date.UTC(someDate.getUTCFullYear(), someDate.getUTCMonth(), 1, 0, 0, 0));
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
@@ -40,18 +42,16 @@ const dateOnlyStr = (someDate = new Date()) =>
   `${someDate.getFullYear()}/${someDate.getMonth() + 1}/${someDate.getDate()}`;
 const dateShortStr = (someDate = new Date()) => languages.current === "EN" ?
   `${lpad(someDate.getMonth() + 1)}/${lpad(someDate.getDate())}` :
-  `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`
+  `${lpad(someDate.getDate())}/${lpad(someDate.getMonth() + 1)}`;
 const displayDate = v => languages.current === "EN" ?
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getDate()} ${v.getFullYear()}` :
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
+/** date retrieval methods */
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
-// noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
-const yesterday = (someDate = new Date()) => addDays(someDate, -1);
 const tomorrow = (someDate = new Date()) => addDays(someDate, 1);
-
 const lastDayOfThisMonth = forDate => {
   let firstOfNextMonth = new Date(forDate);
   firstOfNextMonth.setMonth(forDate.getMonth() + 1);
@@ -59,7 +59,6 @@ const lastDayOfThisMonth = forDate => {
 };
 const isWeekend = (d = new Date()) => /sunday|saturday/i.test(weekDays[languages.EN][new Date(d).getDay()]);
 const formatDay = date => `${getStringFor(types.weekDay, date.getDay(), languages.current)} ${date.getDate()} ${getStringFor(types.month, date.getMonth(), languages.current)} ${date.getFullYear()}`;
-
 const someDay = (someDate = new Date()) => ({
   day: [someDate.getDay(), weekDay2Str(someDate.getDay())],
   dateOnly: dateOnlyStr(someDate),
@@ -68,7 +67,6 @@ const someDay = (someDate = new Date()) => ({
   display: displayDate(someDate),
   isWeekend: isWeekend(someDate),
 });
-const lpad = nr => `${nr}`.padStart(2, "0");
 const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
   let firstOfCurrentMonth = firstOfMonth(year, month);
   const nDates = lastDayOfThisMonth(firstOfCurrentMonth.date);
@@ -81,14 +79,7 @@ const getNDaysFromNow = nDays => {
     return [...a, tomorrow(a.slice(-1)[0])];
   }, days).map(someDay);
 };
-const getTodayPlusNextWeek = () => {
-  let now = new Date();
-  let days = [now];
-  return [...Array(14)].reduce(a => {
-    return [...a, tomorrow(a.slice(-1)[0])];
-  }, days)
-    .map(someDay);
-};
+const getTodayPlusNextWeek = () => getNDaysFromNow(7);
 export {
   getMonth,
   month2Str,
