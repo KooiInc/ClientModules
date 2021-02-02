@@ -72,8 +72,8 @@ const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) =>
       ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [someDay(firstOfCurrentMonth)]);
 };
 /** retrieve range of dates: [fromDate] plus or minus ([backward] true) [nDays] */
-const getNDaysFromDate = (nDays = 6, fromDate = now(), backward = false) => {
-  let days = [backward ? addDays(fromDate, nDays) : fromDate];
+const getNDaysFromDate = (fromDate = now(), nDays = 6, backward = false) => {
+  let days = [backward ? addDays(fromDate, -nDays) : fromDate];
   return [...Array(nDays)].reduce(a => {
     return [...a, tomorrow(a.slice(-1)[0])];
   }, days).map(someDay);
