@@ -1,3 +1,6 @@
+import {setTagPermission} from "./DOMCleanup";
+import {createElementFromHtmlString} from "./DOM";
+
 const cleanWhitespace = str => str.replace(/\s{2,}/g, " ");
 const toZeroPaddedEuropeanDate = val => val.split("/").reverse().map(v => `${v}`.padStart(2, "0")).join("/");
 const date2EuropeanDate = date => date.toISOString().split("T").shift().split("-").reverse().map(v => `${v}`.padStart(2, "0")).join("-");
@@ -55,6 +58,16 @@ const randomStringExtension = () => {
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
     valuesMapping[match.slice(1, -1)] || fallback || match);
+const addCssIfNotAlreadyAdded = (cssId, styleSheetLocation) => {
+  setTagPermission("link", true);
+  if (![...document.styleSheets].find(sheet => sheet.id === cssId)) {
+    const cssLink = createElementFromHtmlString(`
+        <link id="${cssId}" href="${styleSheetLocation}" rel="stylesheet"/>` );
+    document.querySelector("head").appendChild(cssLink);
+  }
+  setTagPermission("link", false);
+}
+
 
 export {
   cleanWhitespace,
@@ -67,4 +80,5 @@ export {
   parseAllToTemplate,
   parseTemplate,
   randomStringExtension,
+  addCssIfNotAlreadyAdded,
 };
