@@ -49,6 +49,7 @@ const displayDate = v => languages.current === "EN" ?
   `${getStringFor(types.weekDay, v.getDay(), languages.current)} ${v.getDate()} ${
       getStringFor(types.month, v.getMonth(), languages.current)} ${v.getFullYear()}`;
 /** date retrieval methods */
+const now = () => new Date(new Date().toUTCString());
 const addDays = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + n));
 const addMonths = (d, n) => new Date(Date.UTC(d.getFullYear(), d.getMonth() + n, d.getDate()));
 const tomorrow = (someDate = new Date()) => addDays(someDate, 1);
@@ -67,10 +68,12 @@ const someDay = (someDate = new Date()) => ({
   display: displayDate(someDate),
   isWeekend: isWeekend(someDate),
 });
-const getMonth = (month = new Date().getUTCMonth(), year = new Date().getUTCFullYear()) => {
-  let firstOfCurrentMonth = firstOfMonth(year, month);
+const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) => {
+  let firstOfCurrentMonth = firstOfMonth(month);
   const nDates = lastDayOfThisMonth(firstOfCurrentMonth.date);
-  return [...Array(nDates - 1)].reduce(a => ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfCurrentMonth]);
+  return [...Array(nDates - 1)]
+    .reduce(a =>
+      ([...a, someDay(tomorrow(a.slice(-1)[0].date))]), [firstOfCurrentMonth]);
 };
 const getNDaysFromNow = nDays => {
   let now = new Date();
