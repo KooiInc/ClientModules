@@ -27,8 +27,8 @@ const weekDaysShort = {
   FR: "Di, Lu, Ma, Me, Je, Ve, Sa".split(", "),
 };
 const lpad = nr => `${nr}`.padStart(2, "0");
-const firstOfMonth = (someDate = new Date()) =>
-  new Date(Date.UTC(someDate.getUTCFullYear(), someDate.getUTCMonth(), 1, 0, 0, 0));
+const firstOfMonth = month =>
+  new Date(Date.UTC(new Date().getUTCFullYear(), someDate.getUTCMonth(), 1, 0, 0, 0));
 // noinspection JSUnusedLocalSymbols stupid webstorm statement by statement sjizl
 const nextMonth = (someDate = new Date()) => addMonths(someDate, 1);
 const types = { month: "months", weekDay: "weekDays", weekDayShort: "weekDaysShort" };
