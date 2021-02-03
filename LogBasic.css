@@ -17,4 +17,5 @@ pre#jql_logger {
   max-height: 600px;
   overflow: auto;
   margin: 0;
+  white-space: pre-wrap;
 }
