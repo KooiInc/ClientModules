@@ -2,12 +2,13 @@ import {createElementFromHtmlString, insertPositions} from "./DOM.js";
 import {addCssIfNotAlreadyAdded} from "./SmallHelpers.js";
 
 let useLogging = false;
-const debugLog = {on: () => useLogging = true, off: () => useLogging = false,};
+let cssLocation = "//cdn.nicon.nl/Modules/logBasic.css";
+const debugLog = {on: (cssLoc = cssLocation) => { cssLocation = cssLoc; useLogging = true; }, off: () => useLogging = false,};
 const log = (...args) => {
     if (!useLogging) { return; }
 
     if (!document.querySelector("#jql_logger")) {
-      addCssIfNotAlreadyAdded("logJql", "//cdn.nicon.nl/Modules/logBasic.css");
+      addCssIfNotAlreadyAdded("logJql", cssLocation);
       const loggingFieldSet = `
       <fieldset id="logBox">
         <legend>Logging</legend>
