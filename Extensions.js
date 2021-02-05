@@ -1,5 +1,6 @@
-import {createElementFromHtmlString} from "./DOM.js";
 import {randomStringExtension} from "./SmallHelpers.js";
+import {createElementFromHtmlString} from "./DOM.js";
+
 /**
  * iterator used for most
  * extensions. Also exposed as '[ExtCollection].each'
@@ -15,8 +16,6 @@ const loop = (extCollection, callback) => {
 };
 
 /* region common helpers */
-randomStringExtension();
-
 const isVisible = el => {
   const {currentStyle} = el;
   const computedStyle = currentStyle || getComputedStyle(el);
@@ -623,6 +622,9 @@ const prop = {
  */
 const on = {
   fn: (extCollection, type, selectorOrCb, callback) => {
+    if (!("getRandom" in String)) {
+      randomStringExtension();
+    }
     let cssSelector = typeof selectorOrCb === "string" && selectorOrCb || null;
     callback = selectorOrCb instanceof Function ? selectorOrCb : callback;
 
