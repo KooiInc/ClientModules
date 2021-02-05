@@ -1,6 +1,6 @@
 import {setTagPermission} from "./DOMCleanup.js";
 import {createElementFromHtmlString} from "./DOM.js";
-import {loop} from "./Extensions";
+import {loop} from "./Extensions.js";
 
 const cleanWhitespace = str => str.replace(/\s{2,}/g, " ");
 const toZeroPaddedEuropeanDate = val => val.split("/").reverse().map(v => `${v}`.padStart(2, "0")).join("/");
