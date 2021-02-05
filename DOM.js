@@ -41,7 +41,9 @@ const createElementFromHtmlString = htmlStr => {
     console.log(`DOM message: no valid element(s) in [${report}]`);
     // onError create an empty element with data attribute
     nwElem = Object.assign(document.createElement("div"), {"data-elementInvalid": `${report}`});
+    return nwElem;
   }
+
   return nwElem.children[0];
 };
 
