@@ -8,7 +8,7 @@ import {
   logStatus
 } from "./Log.js";
 
-import { initializePrototype } from "./SmallHelpers.js"
+import { initializePrototype } from "./SmallHelpers.js";
 
 import {
   setTagPermission,
