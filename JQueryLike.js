@@ -8,6 +8,8 @@ import {
   logStatus
 } from "./Log.js";
 
+import { initializePrototype } from "./SmallHelpers.js"
+
 import {
   setTagPermission,
   getRestricted,
@@ -26,18 +28,6 @@ import {
   extensions,
   loop,
 } from "./Extensions.js";
-
-/* the prototype initializer */
-const initializePrototype = (ctor, extensions) => {
-  Object.entries(extensions).forEach(([key, lambda]) => {
-    ctor.prototype[key] = function (...args) {
-      return lambda.fn
-          ? lambda.fn(this, ...args)
-          : loop(this, el => lambda(el, ...args));
-    };
-  });
-  ctor.prototype.isSet = true;
-};
 
 // -------------------------------------------------------------------- //
 const {$, util} = (() => {

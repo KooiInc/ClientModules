@@ -1,5 +1,6 @@
 import {setTagPermission} from "./DOMCleanup.js";
 import {createElementFromHtmlString} from "./DOM.js";
+import {loop} from "./Extensions";
 
 const cleanWhitespace = str => str.replace(/\s{2,}/g, " ");
 const toZeroPaddedEuropeanDate = val => val.split("/").reverse().map(v => `${v}`.padStart(2, "0")).join("/");
@@ -70,7 +71,18 @@ const addCssIfNotAlreadyAdded = (cssId, styleSheetLocation) => {
     document.querySelector("head").appendChild(cssLink);
   }
   setTagPermission("link", false);
-}
+};
+/* Generic prototype initializer */
+const initializePrototype = (ctor, extensions) => {
+  Object.entries(extensions).forEach(([key, lambda]) => {
+    ctor.prototype[key] = function (...args) {
+      return lambda.fn
+        ? lambda.fn(this, ...args)
+        : loop(this, el => lambda(el, ...args));
+    };
+  });
+  ctor.prototype.isSet = true;
+};
 
 
 export {
@@ -86,4 +98,5 @@ export {
   randomStringExtension,
   addCssIfNotAlreadyAdded,
   repeat,
+  initializePrototype
 };
