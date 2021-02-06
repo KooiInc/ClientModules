@@ -83,7 +83,7 @@ const initializePrototype = (ctor, extensions) => {
   });
   ctor.prototype.isSet = true;
 };
-
+const importAsync = (url, callback) => import(url).then(callback);
 
 export {
   cleanWhitespace,
@@ -98,5 +98,6 @@ export {
   randomStringExtension,
   addCssIfNotAlreadyAdded,
   repeat,
-  initializePrototype
+  initializePrototype,
+  importAsync,
 };
