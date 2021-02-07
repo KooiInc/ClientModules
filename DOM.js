@@ -40,7 +40,8 @@ const createElementFromHtmlString = htmlStr => {
       htmlStr.slice(htmlStr.lastIndexOf(">"))}`;
     console.log(`DOM message: no valid element(s) in [${report}]`);
     // onError create an empty element with data attribute
-    nwElem = Object.assign(document.createElement("div"), {id: `invalid`})
+    nwElem = document.createElement("div");
+    nwElem.dataset.invalid = `${report.substr(0, 20)} ... is not valid html`;
     console.log(`${report} is not valid html`);
     return nwElem;
   }
