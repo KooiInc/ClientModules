@@ -64,7 +64,7 @@ const {$, util} = (() => {
 
         if (isArray) {
           inputObject.forEach(htmlFragment => {
-            log(`trying to create ... [${htmlFragment}]`);
+            log(`(within Array) trying to create ... [${htmlFragment}]`);
             const elemCreated = createElementFromHtmlString(htmlFragment);
 
             elemCreated && this.collection.push(elemCreated);
