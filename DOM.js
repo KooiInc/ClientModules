@@ -37,7 +37,8 @@ const createElementFromHtmlString = htmlStr => {
   if (!nwElem.children.length) {
       nwElem = document.createElement("span");
       nwElem.dataset.invalid = "See comment in this element";
-      nwElem.appendChild(document.createComment(`[${htmlStr}] => Html is not valid, not rendered`));
+      nwElem.appendChild(document.createComment(`[${
+        htmlStr}] => not valid or not allowed`));
   }
 
   return nwElem.dataset.invalid ? nwElem : nwElem.children[0];
