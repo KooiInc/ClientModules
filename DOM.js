@@ -33,7 +33,7 @@ const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd)
 // attrbutes/tags settings. Use element2DOM to
 // insert/append etc. it into your DOM
 const createElementFromHtmlString = htmlStr => {
-  let nwElem;
+  let nwElem, isError = false;
   try {
     nwElem = htmlToVirtualElement(htmlStr);
   } catch(err) {
@@ -43,10 +43,9 @@ const createElementFromHtmlString = htmlStr => {
     // onError create an empty element with data attribute
     nwElem = document.createElement("div");
     nwElem.dataset.invalid = `${report.substr(0, 20)} ... is not valid html`;
-    return nwElem;
   }
 
-  return nwElem.children[0];
+  return isError ? nwElem : nwElem.children[0];
 };
 
 export {

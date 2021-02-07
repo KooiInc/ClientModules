@@ -66,7 +66,6 @@ const {$, util} = (() => {
         if (isArray) {
           inputObject.forEach(htmlFragment => {
             const elemCreated = createElementFromHtmlString(htmlFragment);
-            console.log(elemCreated || `WTF ${htmlFragment}`);
             elemCreated && this.collection.push(elemCreated);
           });
         } else {
