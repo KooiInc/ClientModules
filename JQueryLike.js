@@ -43,8 +43,7 @@ const {$, util} = (() => {
     this.collection = [];
     this.cssSelector = inputObject && inputObject.trim && inputObject || null;
     const appendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
-        !(elem || {dataset: {}}).dataset["invalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
-    );
+        elem && elem instanceof HTMLElement ? [...acc, element2DOM(elem, root, position)] : acc, [] );
 
     const selectorRoot = root !== document.body &&
     (inputObject.constructor === String &&
