@@ -8,7 +8,7 @@ import {
   logStatus
 } from "./Log.js";
 
-import { initializePrototype } from "./SmallHelpers.js";
+import {initializePrototype} from "./SmallHelpers.js";
 
 import {
   setTagPermission,
@@ -32,9 +32,9 @@ import {
 // -------------------------------------------------------------------- //
 const {$, util} = (() => {
   function ExtendedNodeList(
-      inputObject,
-      root = document.body,
-      position = insertPositions.BeforeEnd) {
+    inputObject,
+    root = document.body,
+    position = insertPositions.BeforeEnd) {
 
     if (ExtendedNodeList.prototype.isSet === undefined) {
       initializePrototype(ExtendedNodeList, extensions);
@@ -43,11 +43,11 @@ const {$, util} = (() => {
     this.collection = [];
     this.cssSelector = inputObject && inputObject.trim && inputObject || null;
     const appendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
-        elem && elem instanceof HTMLElement ? [...acc, element2DOM(elem, root, position)] : acc, [] );
+      elem && elem instanceof HTMLElement ? [...acc, element2DOM(elem, root, position)] : acc, []);
 
     const selectorRoot = root !== document.body &&
     (inputObject.constructor === String &&
-        inputObject.toLowerCase() !== "body") ? root : document;
+      inputObject.toLowerCase() !== "body") ? root : document;
 
     try {
       const isArray = Array.isArray(inputObject);
@@ -64,14 +64,25 @@ const {$, util} = (() => {
 
         if (isArray) {
           inputObject.forEach(htmlFragment => {
-            log(`(within Array) trying to create ... [${htmlFragment}]`);
             const elemCreated = createElementFromHtmlString(htmlFragment);
-
-            elemCreated && this.collection.push(elemCreated);
+            if (elemCreated) {
+              elemCreated.dataset.invalid &&
+              document.body.appendChild(elemCreated.childNodes[0]) ||
+              this.collection.push(elemCreated);
+            }
           });
         } else {
           const nwElem = createElementFromHtmlString(inputObject);
-          this.collection = [nwElem];
+          if (nwElem) {
+            if (nwElem.dataset.invalid || nwElem.querySelector("[data-invalid]")) {
+              nwElem.dataset.invalid &&
+                document.body.appendChild(nwElem.firstChild) ||
+                nwElem.querySelectorAll("[data-invalid]").forEach( el =>
+                  document.body.appendChild(el.firstChild) );
+            } else {
+              this.collection = [nwElem];
+            }
+          }
         }
         // remove erroneous elems and append to DOM
         appendCollection();

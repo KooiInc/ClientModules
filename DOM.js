@@ -33,16 +33,12 @@ const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd)
 // attrbutes/tags settings. Use element2DOM to
 // insert/append etc. it into your DOM
 const createElementFromHtmlString = htmlStr => {
-  let nwElem = htmlToVirtualElement(htmlStr);
-
-  if (!nwElem) {
-    const report = `${htmlStr.slice(0, htmlStr.indexOf("<") + 1)}...${
-        htmlStr.slice(htmlStr.lastIndexOf(">"))}`;
-      console.log(`DOM message: no valid element(s) in [${report}]`);
-      // onError create an empty element with data attribute
-      nwElem = document.createElement("div");
-      nwElem.dataset.invalid = `${report.substr(0, 20)} ... is not valid html`;
-    }
+  let nwElem = htmlToVirtualElement(htmlStr), isError = false;
+  if (!nwElem.children.length) {
+      nwElem = document.createElement("span");
+      nwElem.dataset.invalid = "See comment in this element";
+      nwElem.appendChild(document.createComment(`[${htmlStr}] => Html is not valid, not rendered`));
+  }
 
   return nwElem.dataset.invalid ? nwElem : nwElem.children[0];
 };
