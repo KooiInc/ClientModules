@@ -25,7 +25,7 @@ const htmlToVirtualElement = htmlString => {
 
 // add Element to [root] on position [position]
 const element2DOM = (elem, root = document.body, position = adjacents.BeforeEnd) =>
-  root.insertAdjacentElement(position, elem);
+  elem && elem instanceof HTMLElement && root.insertAdjacentElement(position, elem);
 
 
 // create DOM element from [htmlStr

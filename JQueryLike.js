@@ -42,8 +42,8 @@ const {$, util} = (() => {
 
     this.collection = [];
     this.cssSelector = inputObject && inputObject.trim && inputObject || null;
-    const cleanupAndAppendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
-        !(elem || {dataset: {}}).dataset["elementInvalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
+    const appendCollection = () => this.collection = this.collection.reduce((acc, elem) =>
+        !(elem || {dataset: {}}).dataset["invalid"] ? [...acc, element2DOM(elem, root, position)] : acc, []
     );
 
     const selectorRoot = root !== document.body &&
@@ -73,7 +73,7 @@ const {$, util} = (() => {
           this.collection = [nwElem];
         }
         // remove erroneous elems and append to DOM
-        cleanupAndAppendCollection();
+        appendCollection();
         log(`created element: *clean: [${this.collection[0].outerHTML}]`);
       } else if (inputObject && inputObject.trim) {
         this.collection = [...selectorRoot.querySelectorAll(inputObject)];
