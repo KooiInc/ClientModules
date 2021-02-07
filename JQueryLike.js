@@ -86,7 +86,8 @@ const {$, util} = (() => {
         }
         // remove erroneous elems and append to DOM
         appendCollection();
-        log(`created element: *clean: [${this.collection[0].outerHTML}]`);
+        log(`created element: *clean: [${
+          (this.collection[0] || {outerHTML: "no element"}).outerHTML.substr(0, 15)}...]`);
       } else if (inputObject && inputObject.trim) {
         this.collection = [...selectorRoot.querySelectorAll(inputObject)];
       }
