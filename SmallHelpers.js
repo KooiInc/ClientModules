@@ -83,6 +83,17 @@ const initializePrototype = (ctor, extensions) => {
   });
   ctor.prototype.isSet = true;
 };
+// init default values from parameters, allowing to
+// maintain falsy values (like null or 0) if applicable
+const initDefault = (value, defaultValue, ...includeFalsies) => {
+  const empty = value => includeFalsies &&
+  includeFalsies.filter(v =>
+    value !== undefined && isNaN(value) ? isNaN(v) : v === value)
+    .length ?
+    false :
+    Boolean(value) === false;
+  return empty(value) ? defaultValue : value;
+};
 const importAsync = (url, callback) => import(url).then(callback);
 
 export {
