@@ -124,4 +124,5 @@ export {
   repeat,
   initializePrototype,
   importAsync,
+  initDefault,
 };
