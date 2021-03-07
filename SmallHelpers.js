@@ -10,16 +10,29 @@ const throwIf = (assertion = false, message = `Unspecified error`, ErrorType = E
   assertion && (() => {
     throw new ErrorType(message);
   })();
-const Logger = () => {
+const Logger = (forceConsole = false) => {
   let logEl;
-  if (typeof window === "object") {
-    logEl = document.querySelector("#log") || (() => {
-      document.body.append(Object.assign(document.createElement('pre'), {id: "log"}));
-      return document.querySelector("#log");
-    })();
-    return (...logLines) => logLines.forEach(s => logEl.textContent += `${s}\n`);
+  if (typeof window === "object" && !forceConsole) {
+      logEl = document.querySelector("#log") || (() => {
+        const pre = Object.assign(document.createElement('pre'), { id: "log" });
+        document.body.append(pre);
+        return pre;
+      })();
+  return (...logLines) => {
+      if (logLines.length < 1) {
+        logEl.textContent = "";
+      } else {
+        logLines.forEach(s => logEl.textContent += `${s}\n`);
+      }
+      logEl.normalize();
+    };
   } else {
-    return (...logLines) => logLines.forEach(ll => console.log(`* `, ll));
+    return (...logLines) => {
+      console.log(logLines.length);
+      logLines.length < 1 ?
+        console.clear() :
+        logLines.forEach(ll => console.log(`* `, ll));
+    };
   }
 };
 const time2Fragments = (milliseconds) => {
