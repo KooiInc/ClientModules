@@ -10,16 +10,29 @@ const throwIf = (assertion = false, message = `Unspecified error`, ErrorType = E
   assertion && (() => {
     throw new ErrorType(message);
   })();
-const Logger = () => {
+const Logger = (forceConsole = false) => {
   let logEl;
-  if (typeof window === "object") {
-    logEl = document.querySelector("#log") || (() => {
-      document.body.append(Object.assign(document.createElement('pre'), {id: "log"}));
-      return document.querySelector("#log");
-    })();
-    return (...logLines) => logLines.forEach(s => logEl.textContent += `${s}\n`);
+  if (typeof window === "object" && !forceConsole) {
+      logEl = document.querySelector("#log") || (() => {
+        const pre = Object.assign(document.createElement('pre'), { id: "log" });
+        document.body.append(pre);
+        return pre;
+      })();
+  return (...logLines) => {
+      if (logLines.length < 1) {
+        logEl.textContent = "";
+      } else {
+        logLines.forEach(s => logEl.textContent += `${s}\n`);
+      }
+      logEl.normalize();
+    };
   } else {
-    return (...logLines) => logLines.forEach(ll => console.log(`* `, ll));
+    return (...logLines) => {
+      console.log(logLines.length);
+      logLines.length < 1 ?
+        console.clear() :
+        logLines.forEach(ll => console.log(`* `, ll));
+    };
   }
 };
 const time2Fragments = (milliseconds) => {
@@ -92,6 +105,17 @@ const initializePrototype = (ctor, extensions) => {
   });
   ctor.prototype.isSet = true;
 };
+// init default values from parameters, allowing to
+// maintain falsy values (like null or 0) if applicable
+const initDefault = (value, defaultValue, ...includeFalsies) => {
+  const empty = value => includeFalsies &&
+  includeFalsies.filter(v =>
+    value !== undefined && isNaN(value) ? isNaN(v) : v === value)
+    .length ?
+    false :
+    Boolean(value) === false;
+  return empty(value) ? defaultValue : value;
+};
 const importAsync = (url, callback) => import(url).then(callback);
 
 export {
@@ -109,4 +133,5 @@ export {
   repeat,
   initializePrototype,
   importAsync,
+  initDefault,
 };
