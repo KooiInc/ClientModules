@@ -47,17 +47,26 @@ const parseAllToTemplate = (objects2Parse, intoTemplate, fallback = String.fromC
   return lines.join("");
 };
 const randomStringExtension = () => {
-  let characters = [...Array(26)]
+  const characters = [...Array(26)]
     .map((x, i) => String.fromCharCode(i + 65))
     .concat([...Array(26)].map((x, i) => String.fromCharCode(i + 97)))
     .concat([...Array(10)].map((x, i) => `${i}`));
+  const getCharacters = excludes =>
+    excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
+
   String.getRandom = (len = 12, excludes = []) => {
-    const chars = excludes && characters.filter(c => !~excludes.indexOf(c)) || characters;
+    const chars = getCharacters(excludes);
     return [...Array(len)]
       .map(v => chars[Math.floor(Math.random() * chars.length)])
       .join("");
   };
-}
+  // html element-id's can not start with a number
+  String.createRandomHtmlElementId = (len = 12, excludes = []) => {
+    const charsWithoutNumbers = getCharacters(excludes.concat('0123456789'.split("")));
+    const firstChr = charsWithoutNumbers[Math.floor(Math.random() * charsWithoutNumbers.length)];
+    return firstChr.concat(String.getRandom(len - 1, excludes));
+  };
+};
 const repeat = (str, n) => Array(n).join(str);
 const parseTemplate = (template, valuesMapping, fallback = String.fromCharCode(0)) =>
   template.replace(/{[^}]+}/g, (match) =>
