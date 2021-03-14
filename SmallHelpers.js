@@ -70,7 +70,7 @@ const randomStringExtension = () => {
   String.getRandom = (len = 12, excludes = []) => {
     const chars = getCharacters(excludes);
     return [...Array(len)]
-      .map(v => chars[Math.floor(Math.random() * chars.length)])
+      .map(() => chars[Math.floor(Math.random() * chars.length)])
       .join("");
   };
   // html element-id's can not start with a number
