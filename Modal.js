@@ -1,5 +1,5 @@
 // the html generated from this library is always sanitized
-import {createElementFromHtmlString, setTagPermission} from "./DOM.js";
+import {createElementFromHtmlString} from "./DOM.js";
 import {addCssIfNotAlreadyAdded} from "./SmallHelpers.js";
 
 const ModalMessage = (styleSheetLocation = "//cdn.nicon.nl/Modules/Modal.css") => {
