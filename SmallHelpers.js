@@ -26,14 +26,12 @@ const Logger = (forceConsole = false) => {
       }
       logEl.normalize();
     };
-  } else {
-    return (...logLines) => {
+  }
+  return (...logLines) => {
       console.log(logLines.length);
       logLines.length < 1 ?
         console.clear() :
-        logLines.forEach(ll => console.log(`* `, ll));
-    };
-  }
+        logLines.forEach(ll => console.log(`* `, ll));  };
 };
 const time2Fragments = (milliseconds) => {
   milliseconds = Math.abs(milliseconds);
