@@ -19,7 +19,17 @@ const log = (...args) => {
     }
     const logBox = document.querySelector("#jql_logger");
     args.forEach(arg => logBox.textContent += `${arg instanceof Object ? JSON.stringify(arg, null, 2) : arg}\n`);
-  };
+};
+// plain 'pre' logger factory
+const Logger = () => {
+  const report = document.querySelector("#report") ||
+    document.body.insertAdjacentElement(
+      "beforeend",
+      Object.assign(document.createElement("pre"), {id: "report"}));
+  return (...args) => args.forEach(stuff =>
+    report.textContent += (stuff instanceof Object
+      ? JSON.stringify(stuff, null, 2) : stuff) + "\n");
+}
 
 const logStatus = () => useLogging;
-export {log, debugLog, logStatus};
+export {log, debugLog, logStatus, Logger};
