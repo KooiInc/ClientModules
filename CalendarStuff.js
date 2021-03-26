@@ -65,7 +65,7 @@ const someDay = (someDate = new Date()) => ({
   isWeekend: isWeekend(someDate),
 });
 /** retrieve range of all dates of [month] in [year]. Note: [month] is NOT zero based */
-const getMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) => {
+const getDatesForMonth = (month = now().getUTCMonth(), year = now().getUTCFullYear()) => {
   let firstOfCurrentMonth = firstOfMonth(month, year);
   const nDates = lastDayOfMonth(month);
   return [...Array(nDates - 1)]
@@ -82,7 +82,7 @@ const getNDaysFromDate = (fromDate = now(), nDays = 6, backward = false) => {
 
 const getTodayPlusNextWeek = () => getNDaysFrom(7);
 export {
-  getMonth,
+  getDatesForMonth,
   month2Str,
   getNDaysFromDate,
   getTodayPlusNextWeek,
