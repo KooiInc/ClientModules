@@ -115,6 +115,30 @@ const initDefault = (value, defaultValue, ...includeFalsies) => {
   return empty(value) ? defaultValue : value;
 };
 const importAsync = (url, callback) => import(url).then(callback);
+const createDeepCloneExtension = () => {
+  const isImmutable = val =>
+    val === null || val === undefined || [String, Boolean, Number].find(V => val.constructor === V);
+  const isObject = obj =>
+    (obj.constructor !== Date && JSON.stringify(obj) === "{}") || Object.keys(obj).length;
+  const cloneArr = arr => arr.reduce( (acc, value) =>
+    [...acc, isObject(value) ? cloneObj(value) : value], []);
+
+  function cloneObj(obj) {
+    return Object.keys(obj).length === 0 ? obj :
+      Object.entries(obj)
+        .reduce( (acc, [key, value]) => ( {
+          ...acc,
+          [key]:
+            value instanceof Array
+              ? cloneArr(value) :
+              !isImmutable(value) && isObject(value)
+                ? cloneObj(value)
+                : value && value.constructor
+                ? new value.constructor(value)
+                : value } ),  {} );
+  }
+  Object.clone = cloneObj;
+};
 
 export {
   cleanWhitespace,
@@ -132,4 +156,5 @@ export {
   initializePrototype,
   importAsync,
   initDefault,
+  createDeepCloneExtension,
 };
