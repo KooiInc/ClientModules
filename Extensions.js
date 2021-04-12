@@ -353,6 +353,24 @@ const html = {
   }
 };
 
+const outerHtml = { fn: extCollection => extCollection.first().outerHTML };
+
+const htmlFor = {
+  fn: (extCollection, forQuery, htmlString, append) => {
+    if (forQuery && extCollection.collection.length) {
+      const el2Change = extCollection.find$(forQuery);
+      if (!el2Change) { return extCollection; }
+      if (`{htmlValue}`.trim().length < 1) {
+        el2Change.textContent = "";
+      } else {
+        const nwElement = createElementFromHtmlString(`<div>${htmlString}</div>`);
+        el2Change.html(nwElement.innerHTML, append);
+      }
+    }
+    return extCollection;
+  }
+};
+
 /**
  * Toggle attribute [name] with [value] for [el]
  * @param el
@@ -685,6 +703,7 @@ const extensions = {
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
   isEmpty, val, hasClass, is, swapClass, clear, append,
-  replace, appendTo, insert, prop, onAll, virtual};
+  replace, appendTo, insert, prop, onAll, virtual, htmlFor,
+  outerHtml};
 
 export { loop,  extensions, };
