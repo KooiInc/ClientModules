@@ -672,6 +672,12 @@ const onAll = {
   }
 };
 
+const virtual = {
+  fn: (extCollection, htmlStr) => {
+    return new extCollection.constructor(htmlStr, document.querySelector("br"));
+  }
+}
+
 /* endregion */
 
 const extensions = {
@@ -679,6 +685,6 @@ const extensions = {
   text, css, html, toggleAttr, toggleStyleFragments, find,
   find$, each, single, first, first$, on, ON, empty, remove,
   isEmpty, val, hasClass, is, swapClass, clear, append,
-  replace, appendTo, insert, prop, onAll};
+  replace, appendTo, insert, prop, onAll, virtual};
 
 export { loop,  extensions, };

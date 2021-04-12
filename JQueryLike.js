@@ -30,7 +30,7 @@ import {
 } from "./Extensions.js";
 
 // -------------------------------------------------------------------- //
-const {$, util} = (() => {
+const {$, $$, util} = (() => {
   function ExtendedNodeList(
     inputObject,
     root = document.body,
@@ -50,6 +50,10 @@ const {$, util} = (() => {
       inputObject.toLowerCase() !== "body") ? root : document;
 
     try {
+      if (!inputObject) {
+        return this;
+      }
+
       const isArray = Array.isArray(inputObject);
       this.collection = [];
 
@@ -84,8 +88,8 @@ const {$, util} = (() => {
             }
           }
         }
+        !(root instanceof HTMLBRElement) && appendCollection();
         // remove erroneous elems and append to DOM
-        appendCollection();
         log(`created element: *clean: [${
           (this.collection[0] || {outerHTML: "no element"}).outerHTML.substr(0, 15)}...]`);
       } else if (inputObject && inputObject.trim) {
@@ -102,6 +106,7 @@ const {$, util} = (() => {
 
   return {
     $: (...args) => new ExtendedNodeList(...args),
+    $$: html => new ExtendedNodeList(html, Object.assign(document.createElement("br"))),
     util: {
       debugLog,
       log,
@@ -115,4 +120,4 @@ const {$, util} = (() => {
   };
 })();
 
-export {$, util};
+export {$, $$, util};
