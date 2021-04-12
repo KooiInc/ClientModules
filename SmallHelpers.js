@@ -118,24 +118,36 @@ const importAsync = (url, callback) => import(url).then(callback);
 const createDeepCloneExtension = () => {
   const isImmutable = val =>
     val === null || val === undefined || [String, Boolean, Number].find(V => val.constructor === V);
-  const isObject = obj =>
-    (obj.constructor !== Date && JSON.stringify(obj) === "{}") || Object.keys(obj).length;
+  const isObjectAndNotArray = obj =>
+    (obj.constructor !== Date && !Array.isArray(obj) && JSON.stringify(obj) === "{}") || Object.keys(obj).length;
   const cloneArr = arr => arr.reduce( (acc, value) =>
-    [...acc, isObject(value) ? cloneObj(value) : value], []);
+    [...acc, isObjectAndNotArray(value) ? cloneObj(value) : value], []);
+  const isCyclic = obj => {
+    try {
+      JSON.stringify(obj);
+    } catch(err) {
+      return err.message;
+    }
+    return null;
+  };
 
   function cloneObj(obj) {
-    return Object.keys(obj).length === 0 ? obj :
-      Object.entries(obj)
-        .reduce( (acc, [key, value]) => ( {
-          ...acc,
-          [key]:
-            value instanceof Array
-              ? cloneArr(value) :
-              !isImmutable(value) && isObject(value)
-                ? cloneObj(value)
-                : value && value.constructor
-                ? new value.constructor(value)
-                : value } ),  {} );
+    const cyclic = isCyclic(obj);
+    return cyclic ? {
+        error: `Object clone error: the structure is cyclic and can not be cloned, sorry.`,
+        initial: obj } :
+      Object.keys(obj).length === 0 ? obj :
+        Object.entries(obj)
+          .reduce( (acc, [key, value]) => ( {
+            ...acc,
+            [key]:
+              Array.isArray(value)
+                ? cloneArr(value) :
+                !isImmutable(value) && isObjectAndNotArray(value)
+                  ? cloneObj(value)
+                  : value && value.constructor
+                  ? new value.constructor(value)
+                  : value } ),  {} );
   }
   Object.clone = cloneObj;
 };
