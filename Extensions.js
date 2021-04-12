@@ -353,19 +353,33 @@ const html = {
   }
 };
 
+/**
+ * outerHTML for the current collection
+ * @type {{fn: (function(*): string|string|*)}}
+ */
 const outerHtml = { fn: extCollection => extCollection.first().outerHTML };
 
+/**
+ * sets/adds/removes html for an element within the collection
+ * (identified with [forQuery] and returns the original
+ * collection (i.e. not the changed element)
+ * @type {{fn: ((function(*, *=, *, *=): (*))|*)}}
+ */
 const htmlFor = {
-  fn: (extCollection, forQuery, htmlString, append) => {
+  fn: (extCollection, forQuery, htmlString = "", append = false) => {
     if (forQuery && extCollection.collection.length) {
       const el2Change = extCollection.find$(forQuery);
-      if (!el2Change) { return extCollection; }
+      if (!el2Change) {
+        return extCollection;
+      }
+
       if (`{htmlValue}`.trim().length < 1) {
         el2Change.textContent = "";
-      } else {
-        const nwElement = createElementFromHtmlString(`<div>${htmlString}</div>`);
-        el2Change.html(nwElement.innerHTML, append);
+        return extCollection;
       }
+
+      const nwElement = createElementFromHtmlString(`<div>${htmlString}</div>`);
+        el2Change.html(nwElement.innerHTML, append);
     }
     return extCollection;
   }
@@ -690,6 +704,10 @@ const onAll = {
   }
 };
 
+/**
+ * creates an element without attaching it to the DOM
+ * @type {{fn: (function(*, *=): *)}}
+ */
 const virtual = {
   fn: (extCollection, htmlStr) => {
     return new extCollection.constructor(htmlStr, document.querySelector("br"));
