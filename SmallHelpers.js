@@ -151,6 +151,34 @@ const createDeepCloneExtension = () => {
   }
   Object.clone = cloneObj;
 };
+const groupDigits = (number, locale = "DecimalComma") => {
+  return number.constructor !== Number ? number : doGroup();
+
+  function doGroup() {
+    const separators = {
+      DecimalDot: { thousands: ",", decimal: "." },
+      DecimalComma: { thousands: ".", decimal: "," },
+    };
+    locale = Object.keys(separators).find(v => v === locale) ? locale : "DecimalComma";
+    const precision = (number, len) => number.toFixed(12).split(".").pop().slice(0, len);
+    const separateIntegerPart = numberPart => {
+      let n = [...numberPart];
+      let i = -3;
+
+      while (n.length + i > 0) {
+        n.splice(i, 0, separators[locale].thousands);
+        i -= 4;
+      }
+
+      return n.join(``);
+    };
+    const parts = `${number}`.split(/[.,]/).reduce((acc, val, i) =>
+      ({ ...acc, [i < 1 ? "integer" : "decimal"]: (i < 1 ? val : precision(+number, val.length)) }), {});
+
+    return `${separateIntegerPart(parts.integer)}${
+      (parts.decimal ? `${separators[locale].decimal}${parts.decimal}` : ``)}`;
+  }
+};
 
 export {
   cleanWhitespace,
@@ -169,4 +197,5 @@ export {
   importAsync,
   initDefault,
   createDeepCloneExtension,
+  groupDigits,
 };
