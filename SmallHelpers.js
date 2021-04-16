@@ -158,9 +158,7 @@ const groupDigits = (number, locale = "DecimalComma") => {
   };
   locale = Object.keys(separators).find(v => v === locale) ? locale : "DecimalComma";
 
-  return number.constructor !== Number ? number : doGroup();
-
-  function doGroup() {
+  return number.constructor !== Number ? number : (() => {
     const precision = (number, len) => number.toFixed(12).split(".").pop().slice(0, len);
     const separateIntegerPart = numberPart => {
       let n = [...numberPart];
@@ -180,7 +178,7 @@ const groupDigits = (number, locale = "DecimalComma") => {
 
     return `${separateIntegerPart(parts.integer)}${
       parts.decimal ? `${separators[locale].decimal}${parts.decimal}` : ``}`;
-  }
+  })();
 };
 
 export {
