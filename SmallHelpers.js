@@ -152,14 +152,15 @@ const createDeepCloneExtension = () => {
   Object.clone = cloneObj;
 };
 const groupDigits = (number, locale = "DecimalComma") => {
+  const separators = {
+    DecimalDot: { thousands: ",", decimal: "." },
+    DecimalComma: { thousands: ".", decimal: "," },
+  };
+  locale = Object.keys(separators).find(v => v === locale) ? locale : "DecimalComma";
+
   return number.constructor !== Number ? number : doGroup();
 
   function doGroup() {
-    const separators = {
-      DecimalDot: { thousands: ",", decimal: "." },
-      DecimalComma: { thousands: ".", decimal: "," },
-    };
-    locale = Object.keys(separators).find(v => v === locale) ? locale : "DecimalComma";
     const precision = (number, len) => number.toFixed(12).split(".").pop().slice(0, len);
     const separateIntegerPart = numberPart => {
       let n = [...numberPart];
@@ -172,11 +173,13 @@ const groupDigits = (number, locale = "DecimalComma") => {
 
       return n.join(``);
     };
-    const parts = `${number}`.split(/[.,]/).reduce((acc, val, i) =>
-      ({ ...acc, [i < 1 ? "integer" : "decimal"]: (i < 1 ? val : precision(+number, val.length)) }), {});
+    const parts = `${number}`
+      .split(/[.,]/)
+      .reduce((acc, val, i) =>
+        ({ ...acc, [i < 1 ? "integer" : "decimal"]: (i < 1 ? val : precision(number, val.length)) }), {});
 
     return `${separateIntegerPart(parts.integer)}${
-      (parts.decimal ? `${separators[locale].decimal}${parts.decimal}` : ``)}`;
+      parts.decimal ? `${separators[locale].decimal}${parts.decimal}` : ``}`;
   }
 };
 
