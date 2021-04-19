@@ -180,6 +180,10 @@ const groupDigits = (number, locale = "DecimalComma") => {
       parts.decimal ? `${separators[locale].decimal}${parts.decimal}` : ``}`;
   })();
 };
+const curry = fn => {
+  const curryFn = (...args1) => args1.length >= fn.length ? fn(...args1) : (...args2) => curryFn(...args1, ...args2);
+  return curryFn;
+};
 
 export {
   cleanWhitespace,
@@ -199,4 +203,5 @@ export {
   initDefault,
   createDeepCloneExtension,
   groupDigits,
+  curry,
 };
