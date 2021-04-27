@@ -184,6 +184,14 @@ const curry = fn => {
   const curryFn = (...args1) => args1.length >= fn.length ? fn(...args1) : (...args2) => curryFn(...args1, ...args2);
   return curryFn;
 };
+const infiniteCurry = (fn, seed) => {
+  const reduceValue = (args, seedValue) =>
+    args.reduce((acc, a) => fn.call(fn, acc, a), seedValue);
+  const next = (...args) =>
+    (...x) =>
+      !x.length ? reduceValue(args, seed) : next(...args, reduceValue(x, seed));
+  return next();
+};
 
 export {
   cleanWhitespace,
@@ -204,4 +212,5 @@ export {
   createDeepCloneExtension,
   groupDigits,
   curry,
+  infiniteCurry,
 };
