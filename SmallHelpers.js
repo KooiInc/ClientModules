@@ -208,7 +208,21 @@ const clipBoardFactory = elementId  => {
       document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
       document.getSelection().addRange(selected);   // Restore the original selection
     }
+const tryParseJson = jsonTrialValue => {
+  if (!jsonTrialValue) { return null; }
+  try {
+    return JSON.parse(jsonTrialValue);
+  } catch (err) {
+    return jsonTrialValue;
   }
+};
+const storage = {
+  get: key => window.localStorage.getItem(key),
+  object: key => tryParseJson(window.localStorage.getItem(key)),
+  set: (key, value) => window.localStorage.setItem(key, value),
+  setJson: (key, value) => window.localStorage.setItem(key, JSON.stringify(value)),
+  remove: key => window.localStorage.removeItem(key),
+  clear: () => window.localStorage.clear()
 };
 
 export {
@@ -232,4 +246,6 @@ export {
   curry,
   infiniteCurry,
   clipBoardFactory,
+  storage,
+  tryParseJson,
 };
