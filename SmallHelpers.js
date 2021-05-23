@@ -225,7 +225,7 @@ export {
   addCssIfNotAlreadyAdded,
   repeat,
   initializePrototype,
-  importAsync,
+  //importAsync,
   initDefault,
   createDeepCloneExtension,
   groupDigits,
