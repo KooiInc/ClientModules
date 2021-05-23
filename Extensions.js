@@ -230,7 +230,7 @@ const assignAttrValues = (el, keyValuePairs) =>
  */
 const attr = (el, keyOrObj, value) => {
   if (!el) { return true; }
-  if (value) {
+  if (value !== null && value !== undefined) {
     keyOrObj = {[keyOrObj]: value};
   }
 
