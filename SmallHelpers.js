@@ -114,7 +114,7 @@ const initDefault = (value, defaultValue, ...includeFalsies) => {
     Boolean(value) === false;
   return empty(value) ? defaultValue : value;
 };
-const importAsync = (url, callback) => import(url).then(callback);
+//const importAsync = (url, callback) => import(url).then(callback);
 const createDeepCloneExtension = () => {
   const isImmutable = val =>
     val === null || val === undefined || [String, Boolean, Number].find(V => val.constructor === V);
