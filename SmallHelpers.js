@@ -226,6 +226,10 @@ const storage = {
   remove: key => window.localStorage.removeItem(key),
   clear: () => window.localStorage.clear()
 };
+const toNDecimals = (number, decimals = 1) =>
+  !isNaN(+number) ?
+    +(Math.round(parseFloat(`${number}e${decimals}`)) + 'e-' + decimals) :
+    number;
 
 export {
   cleanWhitespace,
@@ -250,4 +254,5 @@ export {
   clipBoardFactory,
   storage,
   tryParseJson,
+  toNDecimals,
 };
