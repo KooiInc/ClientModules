@@ -226,10 +226,22 @@ const storage = {
   remove: key => window.localStorage.removeItem(key),
   clear: () => window.localStorage.clear()
 };
-const toNDecimals = (number, decimals = 1) =>
-  !isNaN(+number) ?
-    +(Math.round(parseFloat(`${number}e${decimals}`)) + 'e-' + decimals) :
-    number;
+const round2NDecimals = (input, decimals = 2, toString = false) => {
+  // just return input value if it's not a recognizable number
+  if (input === null || input.constructor === Boolean || isNaN(+input)) {
+    return input;
+  }
+  // checks for necessity of recursion
+  const decimals2Use = (String(input).split(`.`)[1] || ``).length - 1;
+  const nextDecimals = decimals2Use  > decimals ? decimals2Use : decimals;
+  // recurse per decimal if necessary
+  const converted = nextDecimals !== decimals
+    ? toNDecimalsWithBetterRounding( +( `${
+        Math.round( parseFloat( `${input}e${decimals2Use}` )  )}e-${decimals2Use}` ), decimals )
+    : +( `${Math.round( parseFloat( `${input}e${decimals}` )  )}e-${decimals}` );
+
+  return toString ? converted.toFixed(decimals) : converted;
+};
 
 export {
   cleanWhitespace,
@@ -254,5 +266,5 @@ export {
   clipBoardFactory,
   storage,
   tryParseJson,
-  toNDecimals,
+  round2NDecimals,
 };
