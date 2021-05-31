@@ -231,13 +231,11 @@ const round2NDecimals = (input, decimals = 2, toString = false) => {
   if (input === null || input.constructor === Boolean || isNaN(+input)) {
     return input;
   }
-  // checks for necessity of recursion
-  const decimals2Use = (String(input).split(`.`)[1] || ``).length - 1;
-  const nextDecimals = decimals2Use  > decimals ? decimals2Use : decimals;
+
+  const currentNOfDecimals = (String(input).split(".")[1] || ``).length - 1;
   // recurse per decimal if necessary
-  const converted = nextDecimals !== decimals
-    ? toNDecimalsWithBetterRounding( +( `${
-        Math.round( parseFloat( `${input}e${decimals2Use}` )  )}e-${decimals2Use}` ), decimals )
+  const converted = currentNOfDecimals > decimals
+    ? round2NDecimals( +( `${Math.round( parseFloat( `${input}e${currentNOfDecimals}` )  )}e-${currentNOfDecimals}` ), decimals )
     : +( `${Math.round( parseFloat( `${input}e${decimals}` )  )}e-${decimals}` );
 
   return toString ? converted.toFixed(decimals) : converted;
