@@ -235,7 +235,8 @@ const round2NDecimals = (input, decimals = 2, toString = false) => {
   const currentNOfDecimals = (String(input).split(".")[1] || ``).length - 1;
   // recurse per decimal if necessary
   const converted = currentNOfDecimals > decimals
-    ? round2NDecimals( +( `${Math.round( parseFloat( `${input}e${currentNOfDecimals}` )  )}e-${currentNOfDecimals}` ), decimals )
+    ? round2NDecimals( +( `${Math.round( parseFloat( `${input}e${currentNOfDecimals}` )  )}e-${
+        currentNOfDecimals}` ), decimals )
     : +( `${Math.round( parseFloat( `${input}e${decimals}` )  )}e-${decimals}` );
 
   return toString ? converted.toFixed(decimals) : converted;
